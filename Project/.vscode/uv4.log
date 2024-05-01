@@ -1,0 +1,119 @@
+*** Using Compiler 'V6.21', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
+Build target 'Target 1'
+compiling main.c...
+compiling systick.c...
+compiling gd32e23x_it.c...
+compiling system_gd32e23x.c...
+../Hardware/lcd/lcd_init.c(11): error: use of undeclared identifier 'GPIO_InitTypeDef'
+   11 |         GPIO_InitTypeDef GPIO_InitStructure;
+      |         ^
+../Hardware/lcd/lcd_init.c(12): error: call to undeclared function 'RCC_AHBPeriphClockCmd'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   12 |         RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+      |         ^
+../Hardware/lcd/lcd_init.c(12): error: use of undeclared identifier 'RCC_AHBPeriph_GPIOA'
+   12 |         RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+      |                               ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_InitStructure'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |         ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_0'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                       ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_1'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                                  ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_2'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                                             ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_3'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                                                        ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_4'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                                                                   ^
+../Hardware/lcd/lcd_init.c(14): error: use of undeclared identifier 'GPIO_Pin_5'
+   14 |         GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
+      |                                                                                              ^
+../Hardware/lcd/lcd_init.c(15): error: use of undeclared identifier 'GPIO_InitStructure'
+   15 |         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+      |         ^
+../Hardware/lcd/lcd_init.c(15): error: use of undeclared identifier 'GPIO_Speed_50MHz'
+   15 |         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+      |                                         ^
+../Hardware/lcd/lcd_init.c(16): error: use of undeclared identifier 'GPIO_InitStructure'
+   16 |         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+      |         ^
+../Hardware/lcd/lcd_init.c(16): error: use of undeclared identifier 'GPIO_Mode_OUT'
+   16 |         GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+      |                                        ^
+../Hardware/lcd/lcd_init.c(17): error: use of undeclared identifier 'GPIO_InitStructure'
+   17 |         GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      |         ^
+../Hardware/lcd/lcd_init.c(17): error: use of undeclared identifier 'GPIO_OType_PP'
+   17 |         GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+      |                                         ^
+../Hardware/lcd/lcd_init.c(18): error: call to undeclared function 'GPIO_Init'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   18 |         GPIO_Init(GPIOA, &GPIO_InitStructure);
+      |         ^
+../Hardware/lcd/lcd_init.c(18): error: use of undeclared identifier 'GPIO_InitStructure'
+   18 |         GPIO_Init(GPIOA, &GPIO_InitStructure);
+      |                           ^
+../Hardware/lcd/lcd_init.c(19): error: call to undeclared function 'GPIO_SetBits'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   19 |         GPIO_SetBits(GPIOA,GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5);
+      |         ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+compiling lcd_init.c...
+../Hardware/lcd/lcd.c(3): warning: In file included from...../Hardware/lcd/lcdfont.h(405): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  405 | "<D6><D0>",0x20,0x00,0x20,0x00,0x20,0x00,0xFE,0x03,0x22,0x02,0x22,0x02,0x22,0x02,0xFE,0x03,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(407): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  407 | "<BE><B0>",0xFC,0x01,0x04,0x01,0xFC,0x01,0x04,0x01,0xFC,0x01,0x20,0x00,0xFF,0x07,0x04,0x01,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(411): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  411 | "<B5><E7>",0x10,0x00,0x10,0x00,0xFF,0x01,0x11,0x01,0x11,0x01,0xFF,0x01,0x11,0x01,0x11,0x01,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(413): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  413 | "<D7><D3>",0x00,0x00,0xFC,0x01,0x80,0x00,0x40,0x00,0x20,0x00,0x20,0x00,0xFF,0x07,0x20,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(427): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  427 | "<D6><D0>",0x80,0x00,0x80,0x00,0x80,0x00,0x80,0x00,0xFC,0x1F,0x84,0x10,0x84,0x10,0x84,0x10,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(429): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  429 | "<BE><B0>",0xF8,0x0F,0x08,0x08,0xF8,0x0F,0x08,0x08,0xF8,0x0F,0x80,0x00,0xFF,0x7F,0x00,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(433): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  433 | "<B5><E7>",0x80,0x00,0x80,0x00,0x80,0x00,0xFC,0x1F,0x84,0x10,0x84,0x10,0x84,0x10,0xFC,0x1F,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(435): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  435 | "<D7><D3>",0x00,0x00,0xFE,0x1F,0x00,0x08,0x00,0x04,0x00,0x02,0x80,0x01,0x80,0x00,0xFF,0x7F,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(449): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  449 | "<D6><D0>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x18,0x00,0x00,0x08,0x00,0x00,0x08,0x00,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(455): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  455 | "<BE><B0>",0x00,0x00,0x00,0x00,0x00,0x00,0x40,0x00,0x06,0xC0,0xFF,0x07,0x40,0x00,0x06,0xC0,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(467): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  467 | "<B5><E7>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x18,0x00,0x00,0x08,0x00,0x00,0x08,0x00,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(473): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  473 | "<D7><D3>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0xF0,0xFF,0x0F,0x00,0x00,0x06,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(491): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  491 | "<D6><D0>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x00,0x00,0x80,0x01,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(499): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  499 | "<BE><B0>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x80,0x01,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(515): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  515 | "<B5><E7>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xC0,0x00,0x00,0x00,0xC0,0x01,0x00,
+      |  ^~~~~~~~
+../Hardware/lcd/lcdfont.h(523): warning: illegal character encoding in string literal [-Winvalid-source-encoding]
+  523 | "<D7><D3>",0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,
+      |  ^~~~~~~~
+16 warnings generated.
+compiling lcd.c...
+".\Objects\lcd.axf" - 19 Error(s), 16 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:00
