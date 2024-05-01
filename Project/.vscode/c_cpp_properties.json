@@ -16,7 +16,8 @@
                 "e:\\GD32\\QR_code_detector\\Doc",
                 "e:\\GD32\\QR_code_detector\\Firmware\\GD32E23x_standard_peripheral\\Source",
                 "e:\\GD32\\QR_code_detector\\Firmware\\CMSIS\\GD\\GD32E23x\\Source",
-                "e:\\GD32\\QR_code_detector\\Firmware\\CMSIS\\GD\\GD32E23x\\Source\\ARM"
+                "e:\\GD32\\QR_code_detector\\Firmware\\CMSIS\\GD\\GD32E23x\\Source\\ARM",
+                "C:\\Users\\LBM\\AppData\\Local\\Arm\\Packs\\ARM\\CMSIS\\5.9.0\\CMSIS\\Core\\Include"
             ],
             "defines": [
                 "__alignof__(x)=",

@@ -1,22 +1,46 @@
 #include "lcd_init.h"
 #define delay_ms delay_1ms
-
+/* -------------------------------------------------------------------------- */
 //函数名称：LCD_GPIO_Init
 //函数功能：初始化LCD相连的GPIO
 //传入参数：无
 //作者：lbm
 //时间：2024.5.1
+/* -------------------------------------------------------------------------- */
 void LCD_GPIO_Init(void)
 {
-	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
- 
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA,GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5);
+	//使能时钟
+	rcu_periph_clock_enable(RCU_LCD_SCL);
+	rcu_periph_clock_enable(RCU_LCD_SDA);
+	rcu_periph_clock_enable(RCU_LCD_CS);
+	rcu_periph_clock_enable(RCU_LCD_DC);
+	rcu_periph_clock_enable(RCU_LCD_RES);
+	rcu_periph_clock_enable(RCU_LCD_BLK);
+
+	//配置SCL
+	gpio_mode_set(PORT_LCD_SCL,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_LCD_SCL);
+	gpio_output_options_set(PORT_LCD_SCL,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_LCD_SCL);
+	gpio_bit_write(PORT_LCD_SCL,GPIO_LCD_SCL,SET);
+
+	//配置SDA
+	gpio_mode_set(PORT_LCD_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_LCD_SDA);
+	gpio_output_options_set(RCU_LCD_SDA,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_LCD_SDA);
+	gpio_bit_write(PORT_LCD_SDA,GPIO_LCD_SDA,SET);
+
+	//配置DC
+	gpio_mode_set(PORT_LCD_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_LCD_DC);
+	gpio_output_options_set(PORT_LCD_DC,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_LCD_DC);
+	gpio_bit_write(PORT_LCD_DC,GPIO_LCD_DC,SET);
+
+	//配置CS
+	gpio_mode_set(PORT_LCD_CS,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_LCD_CS);
+	gpio_output_options_set(PORT_LCD_CS,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_LCD_CS);
+	gpio_bit_write(PORT_LCD_CS,GPIO_LCD_CS,SET);
+
+	//配置BLK
+	gpio_mode_set(RCU_LCD_BLK,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_LCD_BLK);
+	gpio_output_options_set(PORT_LCD_BLK,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_LCD_BLK);
+	gpio_bit_write(PORT_LCD_BLK,GPIO_LCD_BLK,SET)
 }
 
 
