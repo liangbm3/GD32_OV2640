@@ -39,6 +39,27 @@
 #define PORT_LCD_BLK    GPIOB
 #define GPIO_LCD_BLK    GPIO_PIN_8
 
+/* --------------------------------- LCD端口定义 -------------------------------- */
+//参考自嘉立创文档
+/* -------------------------------------------------------------------------- */
+#define LCD_SCLK_Clr() gpio_bit_write(PORT_LCD_SCL, GPIO_LCD_SCL, RESET)//SCL=SCLK
+#define LCD_SCLK_Set() gpio_bit_write(PORT_LCD_SCL, GPIO_LCD_SCL, SET)
+
+#define LCD_MOSI_Clr() gpio_bit_write(PORT_LCD_SDA, GPIO_LCD_SDA, RESET)//SDA=MOSI
+#define LCD_MOSI_Set() gpio_bit_write(PORT_LCD_SDA, GPIO_LCD_SDA, SET)
+
+#define LCD_RES_Clr()  gpio_bit_write(PORT_LCD_RES, GPIO_LCD_RES, RESET)//RES
+#define LCD_RES_Set()  gpio_bit_write(PORT_LCD_RES, GPIO_LCD_RES, SET)
+
+#define LCD_DC_Clr()   gpio_bit_write(PORT_LCD_DC, GPIO_LCD_DC, RESET)//DC
+#define LCD_DC_Set()   gpio_bit_write(PORT_LCD_DC, GPIO_LCD_DC, SET)
+                       
+#define LCD_CS_Clr()   gpio_bit_write(PORT_LCD_CS, GPIO_LCD_CS, RESET)//CS
+#define LCD_CS_Set()   gpio_bit_write(PORT_LCD_CS, GPIO_LCD_CS, SET)
+
+#define LCD_BLK_Clr()  gpio_bit_write(PORT_LCD_BLK, GPIO_LCD_BLK, RESET)//BLK
+#define LCD_BLK_Set()  gpio_bit_write(PORT_LCD_BLK, GPIO_LCD_BLK, SET)
+
 
 #if USE_HORIZONTAL==0||USE_HORIZONTAL==1
 #define LCD_W 128
@@ -62,12 +83,12 @@
 #endif
 
 void LCD_GPIO_Init(void);//初始化GPIO
-void LCD_Writ_Bus(u8 dat);//ģ��SPIʱ��
-void LCD_WR_DATA8(u8 dat);//д��һ���ֽ�
-void LCD_WR_DATA(u16 dat);//д�������ֽ�
-void LCD_WR_REG(u8 dat);//д��һ��ָ��
-void LCD_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2);//�������꺯��
-void LCD_Init(void);//LCD��ʼ��
+void LCD_Writ_Bus(u8 dat);//模拟SPI时序
+void LCD_WR_DATA8(u8 dat);//写入一个字节
+void LCD_WR_DATA(u16 dat);//写入两个字节
+void LCD_WR_REG(u8 dat);//写入一个指令
+void LCD_Address_Set(u16 x1,u16 y1,u16 x2,u16 y2);//设置坐标函数
+void LCD_Init(void);//LCD初始化
 #endif
 
 
