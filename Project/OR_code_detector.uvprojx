@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\Firmware\GD32E23x_standard_peripheral\Include;..\Hardware\lcd</IncludePath>
+              <IncludePath>..\User;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\Firmware\GD32E23x_standard_peripheral\Include;..\Hardware\lcd;..\Hardware\OV2640;..\Hardware\SPI;..\Hardware\TIMER;..\Hardware\TPAD</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -546,6 +546,31 @@
               <FileName>pic.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Hardware\lcd\pic.h</FilePath>
+            </File>
+            <File>
+              <FileName>ov2640.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\OV2640\ov2640.c</FilePath>
+            </File>
+            <File>
+              <FileName>sccb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\OV2640\sccb.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\SPI\spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\TIMER\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>tpad.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\TPAD\tpad.c</FilePath>
             </File>
           </Files>
         </Group>
