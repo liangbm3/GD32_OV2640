@@ -1,27 +1,83 @@
 #ifndef _OV2640_H
 #define _OV2640_H
-#include "sys.h"
 #include "sccb.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F103¿ª·¢°å
-//OV2640 Çý¶¯´úÂë	   
-//ÕýµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2015/4/16
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 
+#include "gd32e23x.h"
+#include "systick.h"
 
-//OV2640 Ïà¹ØIO 
-#define OV2640_VSYNC 	PDin(6)				//POWER DOWN¿ØÖÆÐÅºÅ 
-#define OV2640_PWDN  	PBout(3)			//POWER DOWN¿ØÖÆÐÅºÅ 
-#define OV2640_RST  	PBout(15)			//¸´Î»¿ØÖÆÐÅºÅ 
-#define OV2640_HREF  	PCin(8)			//HREFÐÅºÅ 
-#define OV2640_PCLK  	PBin(4)				//PCLKÐÅºÅ 
-#define OV2640_DATA   	GPIOC->IDR&0x00FF	//Êý¾ÝÊäÈë¶Ë¿Ú
+/* -------------------------------------------------------------------------- */
+//ç«¯å£å®å®šä¹‰
+//VSYNC     PA2
+//PWDN      PA3
+//RST       PA4
+//HREF      PA5
+//DATA0     PA6
+//DATA1     PA7
+//DATA2     PA8
+//DATA3     PA9
+//DATA4     PA10
+//DATA5     PA11
+//DATA6     pA12
+//DATA7     PA13
+//PCLK      PA14
+/* -------------------------------------------------------------------------- */
+
+//VSYNCç«¯å£å®å®šä¹‰
+#define RCU_VSYNC RCU_GPIOA
+#define PORT_VSYNC GPIOA
+#define GPIO_VSYNC GPIO_PIN_2
+
+//PWDNç«¯å£å®å®šä¹‰
+#define RCU_PWDN RCU_GPIOA
+#define PORT_PWDN GPIOA
+#define GPIO_PWDN GPIO_PIN_3
+
+//RSTç«¯å£å®å®šä¹‰
+#define RCU_RST RCU_GPIOA
+#define PORT_RST GPIOA
+#define GPIO_RST GPIO_PIN_4
+
+//HREFç«¯å£å®å®šä¹‰
+#define RCU_HREF RCU_GPIOA
+#define PORT_HREF GPIOA
+#define GPIO_HREF GPIO_PIN_5
+
+//clockç«¯å£å®å®šä¹‰
+#define RCU_CLOCK RCU_GPIOA
+#define PORT_CLOCK GPIOA
+#define GPIO_CLOCK GPIO_PIN_14
+
+//æ•°æ®è¾“å…¥ç«¯å£å®šä¹‰
+#define RCU_DATA_0 RCU_GPIOA
+#define PORT_DATA_0 GPIOA
+#define GPIO_DATA_0 GPIO_PIN_6
+
+#define RCU_DATA_1 RCU_GPIOA
+#define PORT_DATA_1 GPIOA
+#define GPIO_DATA_1 GPIO_PIN_7
+
+#define RCU_DATA_2 RCU_GPIOA
+#define PORT_DATA_2 GPIOA
+#define GPIO_DATA_2 GPIO_PIN_8
+
+#define RCU_DATA_3 RCU_GPIOA
+#define PORT_DATA_3 GPIOA
+#define GPIO_DATA_3 GPIO_PIN_9
+
+#define RCU_DATA_4 RCU_GPIOA
+#define PORT_DATA_4 GPIOA
+#define GPIO_DATA_4 GPIO_PIN_10
+
+#define RCU_DATA_5 RCU_GPIOA
+#define PORT_DATA_5 GPIOA
+#define GPIO_DATA_5 GPIO_PIN_11
+
+#define RCU_DATA_6 RCU_GPIOA
+#define PORT_DATA_6 GPIOA
+#define GPIO_DATA_6 GPIO_PIN_12
+
+#define RCU_DATA_7 RCU_GPIOA
+#define PORT_DATA_7 GPIOA
+#define GPIO_DATA_7 GPIO_PIN_13
 
 
 ////////////////////////////////////////////////////////////////////////////////// 
@@ -29,7 +85,9 @@
 #define OV2640_PID				0X2642
  
 
-//µ±Ñ¡ÔñDSPµØÖ·(0XFF=0X00)Ê±,OV2640µÄDSP¼Ä´æÆ÷µØÖ·Ó³Éä±í
+/* -------------------------------------------------------------------------- */
+//å½“é€‰æ‹©DSPåœ°å€(0XFF=0X00)æ—¶ï¼ŒOV2640çš„DSPå¯„å­˜å™¨åœ°å€æ˜ å°„è¡¨
+/* -------------------------------------------------------------------------- */
 #define OV2640_DSP_R_BYPASS     0x05
 #define OV2640_DSP_Qs           0x44
 #define OV2640_DSP_CTRL         0x50
@@ -65,7 +123,10 @@
 #define OV2640_DSP_P_STATUS     0xFE
 #define OV2640_DSP_RA_DLMT      0xFF 
 
-//µ±Ñ¡Ôñ´«¸ÐÆ÷µØÖ·(0XFF=0X01)Ê±,OV2640µÄDSP¼Ä´æÆ÷µØÖ·Ó³Éä±í
+
+/* -------------------------------------------------------------------------- */
+//å½“é€‰æ‹©ä¼ æ„Ÿå™¨åœ°å€(0XFF=0X01)æ—¶ï¼ŒOV2640çš„DSPå¯„å­˜å™¨åœ°å€æ˜ å°„è¡¨
+/* -------------------------------------------------------------------------- */
 #define OV2640_SENSOR_GAIN       0x00
 #define OV2640_SENSOR_COM1       0x03
 #define OV2640_SENSOR_REG04      0x04

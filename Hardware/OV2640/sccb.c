@@ -17,14 +17,17 @@ void SCCB_Init(void)
 
 	//设置SCL为输出模式
 	gpio_mode_set(PORT_SCL,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SCL);
-
 	//配置为开漏输出、50MHZ
 	gpio_output_options_set(PORT_SCL,GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ,GPIO_SCL);
-					
+	//设置高电平
+	SCCB_SCL(1);
+
 	//配置SDA为输出模式
 	gpio_mode_set(PORT_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SDA);
 	//配置为开漏输出、50MHZ
 	gpio_output_options_set(PORT_SDA,GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ,GPIO_SDA);
+	//设置高电平
+	SCCB_SDA(1);
 }			 
 
 /* -------------------------------------------------------------------------- */
@@ -41,7 +44,6 @@ void SCCB_Init(void)
 //在激活状态下，SDA和SCL均为低电平
 void SCCB_Start(void)
 {
-	SCCB_SDA_OUT();//设置SDA为输出模式
     SCCB_SDA(1);
 	SCCB_SCL(1);
 	delay_us(50);
@@ -55,7 +57,6 @@ void SCCB_Start(void)
 //空闲状态时，SDA和SCL均为高电平
 void SCCB_Stop(void)
 {
-    SCCB_SDA_OUT();//设置SDA为输出模式
 	SCCB_SDA(0);
 	delay_us(50);
 	SCCB_SCL(1);
@@ -67,7 +68,6 @@ void SCCB_Stop(void)
 //产生NA信号
 void SCCB_No_Ack(void)
 {
-	SCCB_SDA_OUT();
 	delay_us(50);
 	SCCB_SDA(1);
 	SCCB_SCL(1);	

@@ -1892,7 +1892,7 @@
       </Doc>
       <Doc>
         <Name>..\Hardware\OV2640\sccb.c</Name>
-        <ColumnNumber>8</ColumnNumber>
+        <ColumnNumber>4</ColumnNumber>
         <TopLine>1</TopLine>
         <CurrentLine>36</CurrentLine>
         <Folding>1</Folding>
@@ -1929,7 +1929,7 @@
       <Doc>
         <Name>..\Hardware\OV2640\ov2640.c</Name>
         <ColumnNumber>0</ColumnNumber>
-        <TopLine>100</TopLine>
+        <TopLine>1</TopLine>
         <CurrentLine>1</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>

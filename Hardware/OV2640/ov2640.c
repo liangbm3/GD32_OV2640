@@ -1,22 +1,8 @@
 #include "systick.h"
 #include "ov2640.h"
 #include "ov2640cfg.h"
-#include "timer.h"	  
-#include "delay.h"
-#include "usart.h"			 
+#include "timer.h"	  		 
 #include "sccb.h"	
-//////////////////////////////////////////////////////////////////////////////////	 
-//������ֻ��ѧϰʹ�ã�δ���������ɣ��������������κ���;
-//ALIENTEK STM32F103������
-//OV2640 ��������	   
-//����ԭ��@ALIENTEK
-//������̳:www.openedv.com
-//��������:2015/4/16
-//�汾��V1.0
-//��Ȩ���У�����ؾ���
-//Copyright(C) �������������ӿƼ����޹�˾ 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 
 void JTAG_Set(u8 mode)
 {
 	u32 temp;
@@ -27,52 +13,64 @@ void JTAG_Set(u8 mode)
 	AFIO->MAPR|=temp;       //����jtagģʽ
 } 
 #define SWD_ENABLE         0X01
-//��ʼ��OV2640 
-//�������Ժ�,Ĭ�������1600*1200�ߴ��ͼƬ!! 
-//����ֵ:0,�ɹ�
-//    ����,�������
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Init
+//函数作用：初始化ov2640，配置完后，默认输出1600*1200的图片
+//传入参数：无
+//返回值：无
+//作者：lbm
+//时间：2024.5.3
+/* -------------------------------------------------------------------------- */
 u8 OV2640_Init(void)
 { 
 	u16 i=0;
 	u16 reg;
-	GPIO_InitTypeDef  GPIO_InitStructure;
-	//����IO 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_AFIO, ENABLE);	 //ʹ����ض˿�ʱ��
- 
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_4; 	//PB4 ���� ����
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_4);
-	
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_3; 	//PB3 ���
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_3);
-	
-	
-	GPIO_InitStructure.GPIO_Pin  = 0xff; //PC0~7 ���� ����
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
- 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	 
-	
-	
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_6;  
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;//PD6����
- 	GPIO_Init(GPIOD, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOD,GPIO_Pin_6);
-	
-	
- 
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_15; //PB15��� 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOB,GPIO_Pin_15);
-	
-  	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_8; //PC8���� 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
- 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOC,GPIO_Pin_8);   
+	//使能时钟
+	rcu_periph_clock_enable(RCU_VSYNC);
+	rcu_periph_clock_enable(RCU_PWDN);
+	rcu_periph_clock_enable(RCU_RST);
+	rcu_periph_clock_enable(RCU_HREF);
+	rcu_periph_clock_enable(RCU_CLOCK);
+	rcu_periph_clock_enable(RCU_DATA_0);
+	rcu_periph_clock_enable(RCU_DATA_1);
+	rcu_periph_clock_enable(RCU_DATA_2);
+	rcu_periph_clock_enable(RCU_DATA_3);
+	rcu_periph_clock_enable(RCU_DATA_4);
+	rcu_periph_clock_enable(RCU_DATA_5);
+	rcu_periph_clock_enable(RCU_DATA_6);
+	rcu_periph_clock_enable(RCU_DATA_7);
+
+	//配置VSYNC
+	gpio_mode_set(PORT_VSYNC,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_VSYNC);//输入上拉
+	gpio_bit_write(PORT_VSYNC,GPIO_VSYNC,1);
+
+	//配置PWDN
+	gpio_mode_set(PORT_PWDN,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_PWDN);//输出模式
+	gpio_output_options_set(GPIO_PWDN,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_PWDN);
+	gpio_bit_write(PORT_PWDN,GPIO_PWDN,1);
+
+	//配置RST
+	gpio_mode_set(PORT_RST,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_RST);
+	gpio_output_options_set(PORT_RST,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_RST);
+	gpio_bit_write(PORT_RST,GPIO_RST,1);
+
+	//配置HREF
+	gpio_mode_set(PORT_HREF,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_HREF);
+	gpio_bit_write(PORT_VSYNC,GPIO_VSYNC,1);
+
+	//配置clock
+	gpio_mode_set(PORT_CLOCK,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_CLOCK);
+	gpio_bit_write(PORT_CLOCK,GPIO_CLOCK,1);
+
+	//配置数据端口
+	gpio_mode_set(PORT_DATA_0,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_0);
+	gpio_mode_set(PORT_DATA_1,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_1);
+	gpio_mode_set(PORT_DATA_2,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_2);
+	gpio_mode_set(PORT_DATA_3,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_3);
+	gpio_mode_set(PORT_DATA_4,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_4);
+	gpio_mode_set(PORT_DATA_5,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_5);
+	gpio_mode_set(PORT_DATA_6,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_6);
+	gpio_mode_set(PORT_DATA_7,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_7);  
  
 GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);	
 
