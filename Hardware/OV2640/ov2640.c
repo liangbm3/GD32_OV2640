@@ -1,4 +1,4 @@
-#include "sys.h"
+#include "systick.h"
 #include "ov2640.h"
 #include "ov2640cfg.h"
 #include "timer.h"	  
@@ -6,15 +6,15 @@
 #include "usart.h"			 
 #include "sccb.h"	
 //////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F103¿ª·¢°å
-//OV2640 Çý¶¯´úÂë	   
-//ÕýµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2015/4/16
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ñ§Ï°Ê¹ï¿½Ã£ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½Í¾
+//ALIENTEK STM32F103ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//OV2640 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	   
+//ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½@ALIENTEK
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³:www.openedv.com
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:2015/4/16
+//ï¿½æ±¾ï¿½ï¿½V1.0
+//ï¿½ï¿½È¨ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½ï¿½
+//Copyright(C) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾ 2014-2024
 //All rights reserved									  
 ////////////////////////////////////////////////////////////////////////////////// 
 void JTAG_Set(u8 mode)
@@ -22,54 +22,54 @@ void JTAG_Set(u8 mode)
 	u32 temp;
 	temp=mode;
 	temp<<=25;
-	RCC->APB2ENR|=1<<0;     //¿ªÆô¸¨ÖúÊ±ÖÓ	   
-	AFIO->MAPR&=0XF8FFFFFF; //Çå³ýMAPRµÄ[26:24]
-	AFIO->MAPR|=temp;       //ÉèÖÃjtagÄ£Ê½
+	RCC->APB2ENR|=1<<0;     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½	   
+	AFIO->MAPR&=0XF8FFFFFF; //ï¿½ï¿½ï¿½MAPRï¿½ï¿½[26:24]
+	AFIO->MAPR|=temp;       //ï¿½ï¿½ï¿½ï¿½jtagÄ£Ê½
 } 
 #define SWD_ENABLE         0X01
-//³õÊ¼»¯OV2640 
-//ÅäÖÃÍêÒÔºó,Ä¬ÈÏÊä³öÊÇ1600*1200³ß´çµÄÍ¼Æ¬!! 
-//·µ»ØÖµ:0,³É¹¦
-//    ÆäËû,´íÎó´úÂë
+//ï¿½ï¿½Ê¼ï¿½ï¿½OV2640 
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôºï¿½,Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1600*1200ï¿½ß´ï¿½ï¿½Í¼Æ¬!! 
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½É¹ï¿½
+//    ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 u8 OV2640_Init(void)
 { 
 	u16 i=0;
 	u16 reg;
 	GPIO_InitTypeDef  GPIO_InitStructure;
-	//ÉèÖÃIO 
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_AFIO, ENABLE);	 //Ê¹ÄÜÏà¹Ø¶Ë¿ÚÊ±ÖÓ
+	//ï¿½ï¿½ï¿½ï¿½IO 
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB|RCC_APB2Periph_GPIOC|RCC_APB2Periph_GPIOD|RCC_APB2Periph_AFIO, ENABLE);	 //Ê¹ï¿½ï¿½ï¿½ï¿½Ø¶Ë¿ï¿½Ê±ï¿½ï¿½
  
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_4; 	//PB4 ÊäÈë ÉÏÀ­
+	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_4; 	//PB4 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
  	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOB,GPIO_Pin_4);
 	
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_3; 	//PB3 Êä³ö
+	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_3; 	//PB3 ï¿½ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
  	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOB,GPIO_Pin_3);
 	
 	
-	GPIO_InitStructure.GPIO_Pin  = 0xff; //PC0~7 ÊäÈë ÉÏÀ­
+	GPIO_InitStructure.GPIO_Pin  = 0xff; //PC0~7 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
  	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	 
 	
 	
 	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_6;  
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;//PD6ÊäÈë
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;//PD6ï¿½ï¿½ï¿½ï¿½
  	GPIO_Init(GPIOD, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOD,GPIO_Pin_6);
 	
 	
  
-	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_15; //PB15Êä³ö 
+	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_15; //PB15ï¿½ï¿½ï¿½ 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
  	GPIO_Init(GPIOB, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOB,GPIO_Pin_15);
 	
-  	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_8; //PC8ÊäÈë 
+  	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_8; //PC8ï¿½ï¿½ï¿½ï¿½ 
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
  	GPIO_Init(GPIOC, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOC,GPIO_Pin_8);   
@@ -78,62 +78,62 @@ GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);
 
  	OV2640_PWDN=0;				//POWER ON
 	delay_ms(10);
-	OV2640_RST=0;				//¸´Î»OV2640
+	OV2640_RST=0;				//ï¿½ï¿½Î»OV2640
 	delay_ms(10);
-	OV2640_RST=1;				//½áÊø¸´Î» 
-  	SCCB_Init();        		//³õÊ¼»¯SCCB µÄIO¿Ú	 
-	SCCB_WR_Reg(OV2640_DSP_RA_DLMT, 0x01);	//²Ù×÷sensor¼Ä´æÆ÷
- 	SCCB_WR_Reg(OV2640_SENSOR_COM7, 0x80);	//Èí¸´Î»OV2640
+	OV2640_RST=1;				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î» 
+  	SCCB_Init();        		//ï¿½ï¿½Ê¼ï¿½ï¿½SCCB ï¿½ï¿½IOï¿½ï¿½	 
+	SCCB_WR_Reg(OV2640_DSP_RA_DLMT, 0x01);	//ï¿½ï¿½ï¿½ï¿½sensorï¿½Ä´ï¿½ï¿½ï¿½
+ 	SCCB_WR_Reg(OV2640_SENSOR_COM7, 0x80);	//ï¿½ï¿½ï¿½ï¿½Î»OV2640
 	delay_ms(50); 
-	reg=SCCB_RD_Reg(OV2640_SENSOR_MIDH);	//¶ÁÈ¡³§¼ÒID ¸ß°ËÎ»
+	reg=SCCB_RD_Reg(OV2640_SENSOR_MIDH);	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ID ï¿½ß°ï¿½Î»
 	reg<<=8;
-	reg|=SCCB_RD_Reg(OV2640_SENSOR_MIDL);	//¶ÁÈ¡³§¼ÒID µÍ°ËÎ»
+	reg|=SCCB_RD_Reg(OV2640_SENSOR_MIDL);	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ID ï¿½Í°ï¿½Î»
 	if(reg!=OV2640_MID)
 	{
 		printf("MID:%d\r\n",reg);
 		return 1;
 	}
-	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//¶ÁÈ¡³§¼ÒID ¸ß°ËÎ»
+	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ID ï¿½ß°ï¿½Î»
 	reg<<=8;
-	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//¶ÁÈ¡³§¼ÒID µÍ°ËÎ»
+	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ID ï¿½Í°ï¿½Î»
 	if(reg!=OV2640_PID)
 	{
 		printf("HID:%d\r\n",reg);
 		return 2;
 	}   
- 	//³õÊ¼»¯ OV2640,²ÉÓÃSXGA·Ö±æÂÊ(1600*1200)  
+ 	//ï¿½ï¿½Ê¼ï¿½ï¿½ OV2640,ï¿½ï¿½ï¿½ï¿½SXGAï¿½Ö±ï¿½ï¿½ï¿½(1600*1200)  
 	for(i=0;i<sizeof(ov2640_uxga_init_reg_tbl)/2;i++)
 	{
 	   	SCCB_WR_Reg(ov2640_uxga_init_reg_tbl[i][0],ov2640_uxga_init_reg_tbl[i][1]);
  	} 
   	return 0x00; 	//ok
 } 
-//OV2640ÇÐ»»ÎªJPEGÄ£Ê½
+//OV2640ï¿½Ð»ï¿½ÎªJPEGÄ£Ê½
 void OV2640_JPEG_Mode(void) 
 {
 	u16 i=0;
-	//ÉèÖÃ:YUV422¸ñÊ½
+	//ï¿½ï¿½ï¿½ï¿½:YUV422ï¿½ï¿½Ê½
 	for(i=0;i<(sizeof(ov2640_yuv422_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_yuv422_reg_tbl[i][0],ov2640_yuv422_reg_tbl[i][1]); 
 	} 
-	//ÉèÖÃ:Êä³öJPEGÊý¾Ý
+	//ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½JPEGï¿½ï¿½ï¿½ï¿½
 	for(i=0;i<(sizeof(ov2640_jpeg_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_jpeg_reg_tbl[i][0],ov2640_jpeg_reg_tbl[i][1]);  
 	}  
 }
-//OV2640ÇÐ»»ÎªRGB565Ä£Ê½
+//OV2640ï¿½Ð»ï¿½ÎªRGB565Ä£Ê½
 void OV2640_RGB565_Mode(void) 
 {
 	u16 i=0;
-	//ÉèÖÃ:RGB565Êä³ö
+	//ï¿½ï¿½ï¿½ï¿½:RGB565ï¿½ï¿½ï¿½
 	for(i=0;i<(sizeof(ov2640_rgb565_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_rgb565_reg_tbl[i][0],ov2640_rgb565_reg_tbl[i][1]); 
 	} 
 } 
-//×Ô¶¯ÆØ¹âÉèÖÃ²ÎÊý±í,Ö§³Ö5¸öµÈ¼¶
+//ï¿½Ô¶ï¿½ï¿½Ø¹ï¿½ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ï¿½ï¿½,Ö§ï¿½ï¿½5ï¿½ï¿½ï¿½È¼ï¿½
 const static u8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
 {
 	{
@@ -167,7 +167,7 @@ const static u8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
 		0x26,0x92,	
 	},
 }; 
-//OV2640×Ô¶¯ÆØ¹âµÈ¼¶ÉèÖÃ
+//OV2640ï¿½Ô¶ï¿½ï¿½Ø¹ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½
 //level:0~4
 void OV2640_Auto_Exposure(u8 level)
 {  
@@ -178,12 +178,12 @@ void OV2640_Auto_Exposure(u8 level)
 		SCCB_WR_Reg(p[i*2],p[i*2+1]); 
 	} 
 }  
-//°×Æ½ºâÉèÖÃ
-//0:×Ô¶¯
-//1:Ì«Ñôsunny
-//2,ÒõÌìcloudy
-//3,°ì¹«ÊÒoffice
-//4,¼ÒÀïhome
+//ï¿½ï¿½Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//0:ï¿½Ô¶ï¿½
+//1:Ì«ï¿½ï¿½sunny
+//2,ï¿½ï¿½ï¿½ï¿½cloudy
+//3,ï¿½ì¹«ï¿½ï¿½office
+//4,ï¿½ï¿½ï¿½ï¿½home
 void OV2640_Light_Mode(u8 mode)
 {
 	u8 regccval=0X5E;//Sunny 
@@ -217,7 +217,7 @@ void OV2640_Light_Mode(u8 mode)
 	SCCB_WR_Reg(0XCD,regcdval); 
 	SCCB_WR_Reg(0XCE,regceval);  
 }
-//É«¶ÈÉèÖÃ
+//É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //0:-2
 //1:-1
 //2,0
@@ -233,7 +233,7 @@ void OV2640_Color_Saturation(u8 sat)
 	SCCB_WR_Reg(0X7D,reg7dval);			
 	SCCB_WR_Reg(0X7D,reg7dval); 		
 }
-//ÁÁ¶ÈÉèÖÃ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //0:(0X00)-2
 //1:(0X10)-1
 //2,(0X20) 0
@@ -248,7 +248,7 @@ void OV2640_Brightness(u8 bright)
   SCCB_WR_Reg(0x7d, bright<<4); 
   SCCB_WR_Reg(0x7d, 0x00); 
 }
-//¶Ô±È¶ÈÉèÖÃ
+//ï¿½Ô±È¶ï¿½ï¿½ï¿½ï¿½ï¿½
 //0:-2
 //1:-1
 //2,0
@@ -256,7 +256,7 @@ void OV2640_Brightness(u8 bright)
 //4,+2
 void OV2640_Contrast(u8 contrast)
 {
-	u8 reg7d0val=0X20;//Ä¬ÈÏÎªÆÕÍ¨Ä£Ê½
+	u8 reg7d0val=0X20;//Ä¬ï¿½ï¿½Îªï¿½ï¿½Í¨Ä£Ê½
 	u8 reg7d1val=0X20;
   	switch(contrast)
 	{
@@ -286,43 +286,43 @@ void OV2640_Contrast(u8 contrast)
 	SCCB_WR_Reg(0x7d,reg7d1val);
 	SCCB_WR_Reg(0x7d,0x06);
 }
-//ÌØÐ§ÉèÖÃ
-//0:ÆÕÍ¨Ä£Ê½    
-//1,¸ºÆ¬
-//2,ºÚ°×   
-//3,Æ«ºìÉ«
-//4,Æ«ÂÌÉ«
-//5,Æ«À¶É«
-//6,¸´¹Å	    
+//ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½
+//0:ï¿½ï¿½Í¨Ä£Ê½    
+//1,ï¿½ï¿½Æ¬
+//2,ï¿½Ú°ï¿½   
+//3,Æ«ï¿½ï¿½É«
+//4,Æ«ï¿½ï¿½É«
+//5,Æ«ï¿½ï¿½É«
+//6,ï¿½ï¿½ï¿½ï¿½	    
 void OV2640_Special_Effects(u8 eft)
 {
-	u8 reg7d0val=0X00;//Ä¬ÈÏÎªÆÕÍ¨Ä£Ê½
+	u8 reg7d0val=0X00;//Ä¬ï¿½ï¿½Îªï¿½ï¿½Í¨Ä£Ê½
 	u8 reg7d1val=0X80;
 	u8 reg7d2val=0X80; 
 	switch(eft)
 	{
-		case 1://¸ºÆ¬
+		case 1://ï¿½ï¿½Æ¬
 			reg7d0val=0X40; 
 			break;	
-		case 2://ºÚ°×
+		case 2://ï¿½Ú°ï¿½
 			reg7d0val=0X18; 
 			break;	 
-		case 3://Æ«ºìÉ«
+		case 3://Æ«ï¿½ï¿½É«
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0XC0; 
 			break;	
-		case 4://Æ«ÂÌÉ«
+		case 4://Æ«ï¿½ï¿½É«
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0X40; 
 			break;	
-		case 5://Æ«À¶É«
+		case 5://Æ«ï¿½ï¿½É«
 			reg7d0val=0X18; 
 			reg7d1val=0XA0;
 			reg7d2val=0X40; 
 			break;	
-		case 6://¸´¹Å
+		case 6://ï¿½ï¿½ï¿½ï¿½
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0XA6; 
@@ -335,9 +335,9 @@ void OV2640_Special_Effects(u8 eft)
 	SCCB_WR_Reg(0x7d,reg7d1val);
 	SCCB_WR_Reg(0x7d,reg7d2val); 
 }
-//²ÊÌõ²âÊÔ
-//sw:0,¹Ø±Õ²ÊÌõ
-//   1,¿ªÆô²ÊÌõ(×¢ÒâOV2640µÄ²ÊÌõÊÇµþ¼ÓÔÚÍ¼ÏñÉÏÃæµÄ)
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//sw:0,ï¿½Ø±Õ²ï¿½ï¿½ï¿½
+//   1,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(×¢ï¿½ï¿½OV2640ï¿½Ä²ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 void OV2640_Color_Bar(u8 sw)
 {
 	u8 reg;
@@ -347,9 +347,9 @@ void OV2640_Color_Bar(u8 sw)
 	if(sw)reg|=1<<1; 
 	SCCB_WR_Reg(0X12,reg);
 }
-//ÉèÖÃ´«¸ÐÆ÷Êä³ö´°¿Ú 
-//sx,sy,ÆðÊ¼µØÖ·
-//width,height:¿í¶È(¶ÔÓ¦:horizontal)ºÍ¸ß¶È(¶ÔÓ¦:vertical)
+//ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+//sx,sy,ï¿½ï¿½Ê¼ï¿½ï¿½Ö·
+//width,height:ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ó¦:horizontal)ï¿½Í¸ß¶ï¿½(ï¿½ï¿½Ó¦:vertical)
 void OV2640_Window_Set(u16 sx,u16 sy,u16 width,u16 height)
 {
 	u16 endx;
@@ -359,25 +359,25 @@ void OV2640_Window_Set(u16 sx,u16 sy,u16 width,u16 height)
  	endy=sy+height/2;
 	
 	SCCB_WR_Reg(0XFF,0X01);			
-	temp=SCCB_RD_Reg(0X03);				//¶ÁÈ¡VrefÖ®Ç°µÄÖµ
+	temp=SCCB_RD_Reg(0X03);				//ï¿½ï¿½È¡VrefÖ®Ç°ï¿½ï¿½Öµ
 	temp&=0XF0;
 	temp|=((endy&0X03)<<2)|(sy&0X03);
-	SCCB_WR_Reg(0X03,temp);				//ÉèÖÃVrefµÄstartºÍendµÄ×îµÍ2Î»
-	SCCB_WR_Reg(0X19,sy>>2);			//ÉèÖÃVrefµÄstart¸ß8Î»
-	SCCB_WR_Reg(0X1A,endy>>2);			//ÉèÖÃVrefµÄendµÄ¸ß8Î»
+	SCCB_WR_Reg(0X03,temp);				//ï¿½ï¿½ï¿½ï¿½Vrefï¿½ï¿½startï¿½ï¿½endï¿½ï¿½ï¿½ï¿½ï¿½2Î»
+	SCCB_WR_Reg(0X19,sy>>2);			//ï¿½ï¿½ï¿½ï¿½Vrefï¿½ï¿½startï¿½ï¿½8Î»
+	SCCB_WR_Reg(0X1A,endy>>2);			//ï¿½ï¿½ï¿½ï¿½Vrefï¿½ï¿½endï¿½Ä¸ï¿½8Î»
 	
-	temp=SCCB_RD_Reg(0X32);				//¶ÁÈ¡HrefÖ®Ç°µÄÖµ
+	temp=SCCB_RD_Reg(0X32);				//ï¿½ï¿½È¡HrefÖ®Ç°ï¿½ï¿½Öµ
 	temp&=0XC0;
 	temp|=((endx&0X07)<<3)|(sx&0X07);
-	SCCB_WR_Reg(0X32,temp);				//ÉèÖÃHrefµÄstartºÍendµÄ×îµÍ3Î»
-	SCCB_WR_Reg(0X17,sx>>3);			//ÉèÖÃHrefµÄstart¸ß8Î»
-	SCCB_WR_Reg(0X18,endx>>3);			//ÉèÖÃHrefµÄendµÄ¸ß8Î»
+	SCCB_WR_Reg(0X32,temp);				//ï¿½ï¿½ï¿½ï¿½Hrefï¿½ï¿½startï¿½ï¿½endï¿½ï¿½ï¿½ï¿½ï¿½3Î»
+	SCCB_WR_Reg(0X17,sx>>3);			//ï¿½ï¿½ï¿½ï¿½Hrefï¿½ï¿½startï¿½ï¿½8Î»
+	SCCB_WR_Reg(0X18,endx>>3);			//ï¿½ï¿½ï¿½ï¿½Hrefï¿½ï¿½endï¿½Ä¸ï¿½8Î»
 }
-//ÉèÖÃÍ¼ÏñÊä³ö´óÐ¡
-//OV2640Êä³öÍ¼ÏñµÄ´óÐ¡(·Ö±æÂÊ),ÍêÈ«ÓÉ¸Ãº¯ÊýÈ·¶¨
-//width,height:¿í¶È(¶ÔÓ¦:horizontal)ºÍ¸ß¶È(¶ÔÓ¦:vertical),widthºÍheight±ØÐëÊÇ4µÄ±¶Êý
-//·µ»ØÖµ:0,ÉèÖÃ³É¹¦
-//    ÆäËû,ÉèÖÃÊ§°Ü
+//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
+//OV2640ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ä´ï¿½Ð¡(ï¿½Ö±ï¿½ï¿½ï¿½),ï¿½ï¿½È«ï¿½É¸Ãºï¿½ï¿½ï¿½È·ï¿½ï¿½
+//width,height:ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ó¦:horizontal)ï¿½Í¸ß¶ï¿½(ï¿½ï¿½Ó¦:vertical),widthï¿½ï¿½heightï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½Ä±ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½ï¿½ï¿½Ã³É¹ï¿½
+//    ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 u8 OV2640_OutSize_Set(u16 width,u16 height)
 {
 	u16 outh;
@@ -389,23 +389,23 @@ u8 OV2640_OutSize_Set(u16 width,u16 height)
 	outh=height/4; 
 	SCCB_WR_Reg(0XFF,0X00);	
 	SCCB_WR_Reg(0XE0,0X04);			
-	SCCB_WR_Reg(0X5A,outw&0XFF);		//ÉèÖÃOUTWµÄµÍ°ËÎ»
-	SCCB_WR_Reg(0X5B,outh&0XFF);		//ÉèÖÃOUTHµÄµÍ°ËÎ»
+	SCCB_WR_Reg(0X5A,outw&0XFF);		//ï¿½ï¿½ï¿½ï¿½OUTWï¿½ÄµÍ°ï¿½Î»
+	SCCB_WR_Reg(0X5B,outh&0XFF);		//ï¿½ï¿½ï¿½ï¿½OUTHï¿½ÄµÍ°ï¿½Î»
 	temp=(outw>>8)&0X03;
 	temp|=(outh>>6)&0X04;
-	SCCB_WR_Reg(0X5C,temp);				//ÉèÖÃOUTH/OUTWµÄ¸ßÎ» 
+	SCCB_WR_Reg(0X5C,temp);				//ï¿½ï¿½ï¿½ï¿½OUTH/OUTWï¿½Ä¸ï¿½Î» 
 	SCCB_WR_Reg(0XE0,0X00);	
 	return 0;
 }
-//ÉèÖÃÍ¼Ïñ¿ª´°´óÐ¡
-//ÓÉ:OV2640_ImageSize_SetÈ·¶¨´«¸ÐÆ÷Êä³ö·Ö±æÂÊ´Ó´óÐ¡.
-//¸Ãº¯ÊýÔòÔÚÕâ¸ö·¶Î§ÉÏÃæ½øÐÐ¿ª´°,ÓÃÓÚOV2640_OutSize_SetµÄÊä³ö
-//×¢Òâ:±¾º¯ÊýµÄ¿í¶ÈºÍ¸ß¶È,±ØÐë´óÓÚµÈÓÚOV2640_OutSize_Setº¯ÊýµÄ¿í¶ÈºÍ¸ß¶È
-//     OV2640_OutSize_SetÉèÖÃµÄ¿í¶ÈºÍ¸ß¶È,¸ù¾Ý±¾º¯ÊýÉèÖÃµÄ¿í¶ÈºÍ¸ß¶È,ÓÉDSP
-//     ×Ô¶¯¼ÆËãËõ·Å±ÈÀý,Êä³ö¸øÍâ²¿Éè±¸.
-//width,height:¿í¶È(¶ÔÓ¦:horizontal)ºÍ¸ß¶È(¶ÔÓ¦:vertical),widthºÍheight±ØÐëÊÇ4µÄ±¶Êý
-//·µ»ØÖµ:0,ÉèÖÃ³É¹¦
-//    ÆäËû,ÉèÖÃÊ§°Ü
+//ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ñ¿ª´ï¿½ï¿½ï¿½Ð¡
+//ï¿½ï¿½:OV2640_ImageSize_SetÈ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½Ê´Ó´ï¿½Ð¡.
+//ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½OV2640_OutSize_Setï¿½ï¿½ï¿½ï¿½ï¿½
+//×¢ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ÈºÍ¸ß¶ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½OV2640_OutSize_Setï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ÈºÍ¸ß¶ï¿½
+//     OV2640_OutSize_Setï¿½ï¿½ï¿½ÃµÄ¿ï¿½ï¿½ÈºÍ¸ß¶ï¿½,ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ¿ï¿½ï¿½ÈºÍ¸ß¶ï¿½,ï¿½ï¿½DSP
+//     ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â²¿ï¿½è±¸.
+//width,height:ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Ó¦:horizontal)ï¿½Í¸ß¶ï¿½(ï¿½ï¿½Ó¦:vertical),widthï¿½ï¿½heightï¿½ï¿½ï¿½ï¿½ï¿½ï¿½4ï¿½Ä±ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½ï¿½ï¿½Ã³É¹ï¿½
+//    ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 u8 OV2640_ImageWin_Set(u16 offx,u16 offy,u16 width,u16 height)
 {
 	u16 hsize;
@@ -417,31 +417,31 @@ u8 OV2640_ImageWin_Set(u16 offx,u16 offy,u16 width,u16 height)
 	vsize=height/4;
 	SCCB_WR_Reg(0XFF,0X00);	
 	SCCB_WR_Reg(0XE0,0X04);					
-	SCCB_WR_Reg(0X51,hsize&0XFF);		//ÉèÖÃH_SIZEµÄµÍ°ËÎ»
-	SCCB_WR_Reg(0X52,vsize&0XFF);		//ÉèÖÃV_SIZEµÄµÍ°ËÎ»
-	SCCB_WR_Reg(0X53,offx&0XFF);		//ÉèÖÃoffxµÄµÍ°ËÎ»
-	SCCB_WR_Reg(0X54,offy&0XFF);		//ÉèÖÃoffyµÄµÍ°ËÎ»
+	SCCB_WR_Reg(0X51,hsize&0XFF);		//ï¿½ï¿½ï¿½ï¿½H_SIZEï¿½ÄµÍ°ï¿½Î»
+	SCCB_WR_Reg(0X52,vsize&0XFF);		//ï¿½ï¿½ï¿½ï¿½V_SIZEï¿½ÄµÍ°ï¿½Î»
+	SCCB_WR_Reg(0X53,offx&0XFF);		//ï¿½ï¿½ï¿½ï¿½offxï¿½ÄµÍ°ï¿½Î»
+	SCCB_WR_Reg(0X54,offy&0XFF);		//ï¿½ï¿½ï¿½ï¿½offyï¿½ÄµÍ°ï¿½Î»
 	temp=(vsize>>1)&0X80;
 	temp|=(offy>>4)&0X70;
 	temp|=(hsize>>5)&0X08;
 	temp|=(offx>>8)&0X07; 
-	SCCB_WR_Reg(0X55,temp);				//ÉèÖÃH_SIZE/V_SIZE/OFFX,OFFYµÄ¸ßÎ»
-	SCCB_WR_Reg(0X57,(hsize>>2)&0X80);	//ÉèÖÃH_SIZE/V_SIZE/OFFX,OFFYµÄ¸ßÎ»
+	SCCB_WR_Reg(0X55,temp);				//ï¿½ï¿½ï¿½ï¿½H_SIZE/V_SIZE/OFFX,OFFYï¿½Ä¸ï¿½Î»
+	SCCB_WR_Reg(0X57,(hsize>>2)&0X80);	//ï¿½ï¿½ï¿½ï¿½H_SIZE/V_SIZE/OFFX,OFFYï¿½Ä¸ï¿½Î»
 	SCCB_WR_Reg(0XE0,0X00);	
 	return 0;
 } 
-//¸Ãº¯ÊýÉèÖÃÍ¼Ïñ³ß´ç´óÐ¡,Ò²¾ÍÊÇËùÑ¡¸ñÊ½µÄÊä³ö·Ö±æÂÊ
+//ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ß´ï¿½ï¿½Ð¡,Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½
 //UXGA:1600*1200,SVGA:800*600,CIF:352*288
-//width,height:Í¼Ïñ¿í¶ÈºÍÍ¼Ïñ¸ß¶È
-//·µ»ØÖµ:0,ÉèÖÃ³É¹¦
-//    ÆäËû,ÉèÖÃÊ§°Ü
+//width,height:Í¼ï¿½ï¿½ï¿½ï¿½Èºï¿½Í¼ï¿½ï¿½ß¶ï¿½
+//ï¿½ï¿½ï¿½ï¿½Öµ:0,ï¿½ï¿½ï¿½Ã³É¹ï¿½
+//    ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½
 u8 OV2640_ImageSize_Set(u16 width,u16 height)
 { 
 	u8 temp; 
 	SCCB_WR_Reg(0XFF,0X00);			
 	SCCB_WR_Reg(0XE0,0X04);			
-	SCCB_WR_Reg(0XC0,(width)>>3&0XFF);		//ÉèÖÃHSIZEµÄ10:3Î»
-	SCCB_WR_Reg(0XC1,(height)>>3&0XFF);		//ÉèÖÃVSIZEµÄ10:3Î»
+	SCCB_WR_Reg(0XC0,(width)>>3&0XFF);		//ï¿½ï¿½ï¿½ï¿½HSIZEï¿½ï¿½10:3Î»
+	SCCB_WR_Reg(0XC1,(height)>>3&0XFF);		//ï¿½ï¿½ï¿½ï¿½VSIZEï¿½ï¿½10:3Î»
 	temp=(width&0X07)<<3;
 	temp|=height&0X07;
 	temp|=(width>>4)&0X80; 

@@ -1,36 +1,76 @@
 #ifndef __SCCB_H
 #define __SCCB_H
-#include "sys.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞò²Î¿¼×ÔÍøÓÑguanfu_wang´úÂë¡£
-//ALIENTEK STM32F103¿ª·¢°å 
-//SCCB Çı¶¯´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2015/4/16
-//°æ±¾£ºV1.0		    							    							  
-//////////////////////////////////////////////////////////////////////////////////
- 
- 
-#define SCCB_SDA_IN()  {GPIOB->CRH&=0XFF0FFFFF;GPIOB->CRH|=0X00800000;}
-#define SCCB_SDA_OUT() {GPIOB->CRH&=0XFF0FFFFF;GPIOB->CRH|=0X00300000;}
+#include "gd32e23x.h"
+#include "systick.h"
+#include <stdint.h>
+#ifndef u8
+#define u8 uint8_t
+#endif
 
-//IO²Ù×÷º¯Êı	 
-#define SCCB_SCL    		PDout(3)	 	//SCL
-#define SCCB_SDA    		PBout(13) 		//SDA	 
+#ifndef u16
+#define u16 uint16_t
+#endif
 
-#define SCCB_READ_SDA    	PBin(13)  		//ÊäÈëSDA    
-#define SCCB_ID   			0X60  			//OV2640µÄID
+#ifndef u32
+#define u32 uint32_t
+#endif
 
-///////////////////////////////////////////
-void SCCB_Init(void);
-void SCCB_Start(void);
-void SCCB_Stop(void);
-void SCCB_No_Ack(void);
-u8 SCCB_WR_Byte(u8 dat);
-u8 SCCB_RD_Byte(void);
-u8 SCCB_WR_Reg(u8 reg,u8 data);
-u8 SCCB_RD_Reg(u8 reg);
+/* -------------------------------------------------------------------------- */
+//ç«¯å£å®å®šä¹‰
+//å¤ç”¨ç«¯å£ï¼š    SDA   PA1
+//             SCL   PA0
+//å‚è€ƒï¼šå˜‰ç«‹åˆ›æ–‡æ¡£
+//ä½œè€…ï¼šlbm
+//æ—¶é—´ï¼š2024.5.3
+/* -------------------------------------------------------------------------- */
+
+//SDAç«¯å£ç§»æ¤
+#define RCU_SDA RCU_GPIOA
+#define PORT_SDA GPIOA
+#define GPIO_SDA GPIO_PIN_1
+
+//SCLç«¯å£ç§»æ¤
+#define RCU_SCL RCU_I2C1
+#define PORT_SCL GPIOA
+#define GPIO_SCL GPIO_PIN_0
+
+//IIC
+#define RCU_IIC RCU_I2C1
+#define BSP_IIC I2C1
+#define IIC_ADDR 0x80
+#define IIC_AF GPIO_AF_4
+
+/* -------------------------------------------------------------------------- */
+//ç«¯å£æ“ä½œå‡½æ•°å®å®šä¹‰
+//ä½œè€…ï¼šlbm
+//æ—¥æœŸ2024.5.3
+/* -------------------------------------------------------------------------- */
+
+//è®¾ç½®SDAçš„è¾“å…¥è¾“å‡º
+#define SCCB_SDA_IN()  gpio_mode_set(PORT_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
+#define SCCB_SDA_OUT() gpio_mode_set(PORT_SDA,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
+
+//SDAå’ŒSCLçš„è¾“å‡ºå‡½æ•°
+#define SCCB_SDA(x) gpio_bit_write(PORT_SDA,GPIO_SDA,(x?SET:RESET))
+#define SCCB_SCL(x) gpio_bit_write(PORT_SCL,GPIO_SDA,(x?SET:RESET))
+
+//è·å–SDAçš„å¼•è„šç”µå¹³å˜åŒ–
+#define SCCB_READ_SDA gpio_input_bit_get(PORT_SDA,GPIO_SDA)
+
+//ov2640çš„id
+#define SCCB_ID   			0X60  			
+
+/* -------------------------------------------------------------------------- */
+//å‡½æ•°å£°æ˜
+/* -------------------------------------------------------------------------- */
+void SCCB_Init(void);//åˆå§‹åŒ–SCCBæ¥å£
+void SCCB_Start(void);//SCCBèµ·å§‹ä¿¡å·
+void SCCB_Stop(void);//SCCBåœæ­¢ä¿¡å·
+void SCCB_No_Ack(void);//äº§ç”ŸNAä¿¡å·
+u8 SCCB_WR_Byte(u8 dat);//SCCBå†™å…¥ä¸€ä¸ªå­—èŠ‚
+u8 SCCB_RD_Byte(void);//SCCBè¯»å–ä¸€ä¸ªå­—èŠ‚
+u8 SCCB_WR_Reg(u8 reg,u8 data);//å†™å¯„å­˜å™¨
+u8 SCCB_RD_Reg(u8 reg);//è¯»å¯„å­˜å™¨
 #endif
 
 
