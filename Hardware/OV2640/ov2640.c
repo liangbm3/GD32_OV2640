@@ -3,16 +3,7 @@
 #include "ov2640cfg.h"
 #include "timer.h"	  		 
 #include "sccb.h"	
-void JTAG_Set(u8 mode)
-{
-	u32 temp;
-	temp=mode;
-	temp<<=25;
-	RCC->APB2ENR|=1<<0;     //��������ʱ��	   
-	AFIO->MAPR&=0XF8FFFFFF; //���MAPR��[26:24]
-	AFIO->MAPR|=temp;       //����jtagģʽ
-} 
-#define SWD_ENABLE         0X01
+
 /* -------------------------------------------------------------------------- */
 //函数名称：OV2640_Init
 //函数作用：初始化ov2640，配置完后，默认输出1600*1200的图片
@@ -41,11 +32,11 @@ u8 OV2640_Init(void)
 	rcu_periph_clock_enable(RCU_DATA_7);
 
 	//配置VSYNC
-	gpio_mode_set(PORT_VSYNC,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_VSYNC);//输入上拉
+	gpio_mode_set(PORT_VSYNC,GPIO_MODE_INPUT,GPIO_PUPD_NONE,GPIO_VSYNC);//输入
 	gpio_bit_write(PORT_VSYNC,GPIO_VSYNC,1);
 
 	//配置PWDN
-	gpio_mode_set(PORT_PWDN,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_PWDN);//输出模式
+	gpio_mode_set(PORT_PWDN,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_PWDN);//输出模式
 	gpio_output_options_set(GPIO_PWDN,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_PWDN);
 	gpio_bit_write(PORT_PWDN,GPIO_PWDN,1);
 
@@ -55,7 +46,7 @@ u8 OV2640_Init(void)
 	gpio_bit_write(PORT_RST,GPIO_RST,1);
 
 	//配置HREF
-	gpio_mode_set(PORT_HREF,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_HREF);
+	gpio_mode_set(PORT_HREF,GPIO_MODE_INPUT,GPIO_PUPD_NONE,GPIO_HREF);
 	gpio_bit_write(PORT_VSYNC,GPIO_VSYNC,1);
 
 	//配置clock
@@ -71,67 +62,83 @@ u8 OV2640_Init(void)
 	gpio_mode_set(PORT_DATA_5,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_5);
 	gpio_mode_set(PORT_DATA_6,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_6);
 	gpio_mode_set(PORT_DATA_7,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_DATA_7);  
- 
-GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable,ENABLE);	
 
- 	OV2640_PWDN=0;				//POWER ON
+ 	OV2640_PWDN(0);				//POWER ON
 	delay_ms(10);
-	OV2640_RST=0;				//��λOV2640
+	OV2640_RST(0);				//复位ov2640
 	delay_ms(10);
-	OV2640_RST=1;				//������λ 
-  	SCCB_Init();        		//��ʼ��SCCB ��IO��	 
-	SCCB_WR_Reg(OV2640_DSP_RA_DLMT, 0x01);	//����sensor�Ĵ���
- 	SCCB_WR_Reg(OV2640_SENSOR_COM7, 0x80);	//����λOV2640
+	OV2640_RST(1);				//结束复位
+  	SCCB_Init();        		//初始化SCCB的IO口
+	SCCB_WR_Reg(OV2640_DSP_RA_DLMT, 0x01);	//操作Sensor寄存器
+ 	SCCB_WR_Reg(OV2640_SENSOR_COM7, 0x80);	//软复位0v2640
 	delay_ms(50); 
-	reg=SCCB_RD_Reg(OV2640_SENSOR_MIDH);	//��ȡ����ID �߰�λ
+	reg=SCCB_RD_Reg(OV2640_SENSOR_MIDH);	//读取厂家ID高八位
 	reg<<=8;
-	reg|=SCCB_RD_Reg(OV2640_SENSOR_MIDL);	//��ȡ����ID �Ͱ�λ
+	reg|=SCCB_RD_Reg(OV2640_SENSOR_MIDL);	//读取厂家ID第八位
 	if(reg!=OV2640_MID)
 	{
 		printf("MID:%d\r\n",reg);
 		return 1;
 	}
-	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//��ȡ����ID �߰�λ
+	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//读取厂家ID高八位
 	reg<<=8;
-	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//��ȡ����ID �Ͱ�λ
+	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//读取厂家ID第八位
 	if(reg!=OV2640_PID)
 	{
 		printf("HID:%d\r\n",reg);
 		return 2;
 	}   
- 	//��ʼ�� OV2640,����SXGA�ֱ���(1600*1200)  
+ 	//初始化ov2640，采用（1600*1200）  
 	for(i=0;i<sizeof(ov2640_uxga_init_reg_tbl)/2;i++)
 	{
 	   	SCCB_WR_Reg(ov2640_uxga_init_reg_tbl[i][0],ov2640_uxga_init_reg_tbl[i][1]);
  	} 
   	return 0x00; 	//ok
 } 
-//OV2640�л�ΪJPEGģʽ
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_JPEG_Mode
+//函数功能：OV2640切换为JPEG模式
+//传入参数：无
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_JPEG_Mode(void) 
 {
 	u16 i=0;
-	//����:YUV422��ʽ
+	//设置YUV422格式
 	for(i=0;i<(sizeof(ov2640_yuv422_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_yuv422_reg_tbl[i][0],ov2640_yuv422_reg_tbl[i][1]); 
 	} 
-	//����:���JPEG����
+	//设置JPEG数据
 	for(i=0;i<(sizeof(ov2640_jpeg_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_jpeg_reg_tbl[i][0],ov2640_jpeg_reg_tbl[i][1]);  
 	}  
 }
-//OV2640�л�ΪRGB565ģʽ
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_RGB565_Mode
+//函数功能：ov2640切换为RGB565模式
+//传入参数：无
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_RGB565_Mode(void) 
 {
 	u16 i=0;
-	//����:RGB565���
+	//设置：RGB565输出
 	for(i=0;i<(sizeof(ov2640_rgb565_reg_tbl)/2);i++)
 	{
 		SCCB_WR_Reg(ov2640_rgb565_reg_tbl[i][0],ov2640_rgb565_reg_tbl[i][1]); 
 	} 
-} 
-//�Զ��ع����ò�����,֧��5���ȼ�
+}
+
+
+/* -------------------------------------------------------------------------- */
+//自动曝光参数表，支持五个等级
+/* -------------------------------------------------------------------------- */
 const static u8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
 {
 	{
@@ -165,8 +172,14 @@ const static u8 OV2640_AUTOEXPOSURE_LEVEL[5][8]=
 		0x26,0x92,	
 	},
 }; 
-//OV2640�Զ��ع�ȼ�����
-//level:0~4
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Auto_Exposure
+//函数功能：OV2640自动曝光等级设置
+//传入参数：level:0~4
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Auto_Exposure(u8 level)
 {  
 	u8 i;
@@ -176,12 +189,19 @@ void OV2640_Auto_Exposure(u8 level)
 		SCCB_WR_Reg(p[i*2],p[i*2+1]); 
 	} 
 }  
-//��ƽ������
-//0:�Զ�
-//1:̫��sunny
-//2,����cloudy
-//3,�칫��office
-//4,����home
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Light_Mode
+//函数功能：白平衡设置
+//传入参数：mode：
+//				0:自动
+//				1:̫太阳sunny
+//				2,阴天cloudy
+//				3,办公室office
+//				4,家里home
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Light_Mode(u8 mode)
 {
 	u8 regccval=0X5E;//Sunny 
@@ -215,12 +235,19 @@ void OV2640_Light_Mode(u8 mode)
 	SCCB_WR_Reg(0XCD,regcdval); 
 	SCCB_WR_Reg(0XCE,regceval);  
 }
-//ɫ������
-//0:-2
-//1:-1
-//2,0
-//3,+1
-//4,+2
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Color_Saturation
+//函数功能：色度设置
+//传入参数：sat：
+//				0:-2
+//				1:-1
+//				2,0
+//				3,+1
+//				4,+2
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Color_Saturation(u8 sat)
 { 
 	u8 reg7dval=((sat+2)<<4)|0X08;
@@ -231,12 +258,19 @@ void OV2640_Color_Saturation(u8 sat)
 	SCCB_WR_Reg(0X7D,reg7dval);			
 	SCCB_WR_Reg(0X7D,reg7dval); 		
 }
-//��������
-//0:(0X00)-2
-//1:(0X10)-1
-//2,(0X20) 0
-//3,(0X30)+1
-//4,(0X40)+2
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Brightness
+//函数功能：亮度设置
+//传入参数：bright：
+//					0:(0X00)-2
+//					1:(0X10)-1
+//					2,(0X20) 0
+//					3,(0X30)+1
+//					4,(0X40)+2
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Brightness(u8 bright)
 {
   SCCB_WR_Reg(0xff, 0x00);
@@ -246,15 +280,22 @@ void OV2640_Brightness(u8 bright)
   SCCB_WR_Reg(0x7d, bright<<4); 
   SCCB_WR_Reg(0x7d, 0x00); 
 }
-//�Աȶ�����
-//0:-2
-//1:-1
-//2,0
-//3,+1
-//4,+2
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Contrast
+//函数功能：对比度设置
+//传入参数：contrast：
+//					0:-2
+//					1:-1
+//					2,0
+//					3,+1
+//					4,+2
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Contrast(u8 contrast)
 {
-	u8 reg7d0val=0X20;//Ĭ��Ϊ��ͨģʽ
+	u8 reg7d0val=0X20;//默认为普通模式
 	u8 reg7d1val=0X20;
   	switch(contrast)
 	{
@@ -284,43 +325,50 @@ void OV2640_Contrast(u8 contrast)
 	SCCB_WR_Reg(0x7d,reg7d1val);
 	SCCB_WR_Reg(0x7d,0x06);
 }
-//��Ч����
-//0:��ͨģʽ    
-//1,��Ƭ
-//2,�ڰ�   
-//3,ƫ��ɫ
-//4,ƫ��ɫ
-//5,ƫ��ɫ
-//6,����	    
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称： OV2640_Special_Effects
+//函数功能：特效设置
+//传入参数：eft：
+//				0:普通模式   
+//				1,负片
+//				2,黑白
+//				3,偏红色
+//				4,偏绿色
+//				5,偏蓝色
+//				6,复古
+//返回值：无
+/* -------------------------------------------------------------------------- */    
 void OV2640_Special_Effects(u8 eft)
 {
-	u8 reg7d0val=0X00;//Ĭ��Ϊ��ͨģʽ
+	u8 reg7d0val=0X00;//默认为普通模式
 	u8 reg7d1val=0X80;
 	u8 reg7d2val=0X80; 
 	switch(eft)
 	{
-		case 1://��Ƭ
+		case 1:
 			reg7d0val=0X40; 
 			break;	
-		case 2://�ڰ�
+		case 2:
 			reg7d0val=0X18; 
 			break;	 
-		case 3://ƫ��ɫ
+		case 3:
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0XC0; 
 			break;	
-		case 4://ƫ��ɫ
+		case 4:
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0X40; 
 			break;	
-		case 5://ƫ��ɫ
+		case 5:
 			reg7d0val=0X18; 
 			reg7d1val=0XA0;
 			reg7d2val=0X40; 
 			break;	
-		case 6://����
+		case 6:
 			reg7d0val=0X18; 
 			reg7d1val=0X40;
 			reg7d2val=0XA6; 
@@ -333,9 +381,16 @@ void OV2640_Special_Effects(u8 eft)
 	SCCB_WR_Reg(0x7d,reg7d1val);
 	SCCB_WR_Reg(0x7d,reg7d2val); 
 }
-//��������
-//sw:0,�رղ���
-//   1,��������(ע��OV2640�Ĳ����ǵ�����ͼ�������)
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Color_Bar
+//函数功能：彩条测试
+//传入参数：sw:
+//				0,关闭彩条
+//   			1,开启彩条（注意ov2640的彩条是叠加在图像上面的）
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Color_Bar(u8 sw)
 {
 	u8 reg;
@@ -345,9 +400,16 @@ void OV2640_Color_Bar(u8 sw)
 	if(sw)reg|=1<<1; 
 	SCCB_WR_Reg(0X12,reg);
 }
-//���ô������������ 
-//sx,sy,��ʼ��ַ
-//width,height:����(��Ӧ:horizontal)�͸߶�(��Ӧ:vertical)
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_Window_Set
+//函数功能：设置传感器输出窗口
+//传入参数：
+//			sx，sy，起始地址
+//			width,height:宽度(对应:horizontal)高度(对应：vertical)
+//返回值：无
+/* -------------------------------------------------------------------------- */
 void OV2640_Window_Set(u16 sx,u16 sy,u16 width,u16 height)
 {
 	u16 endx;
@@ -357,25 +419,28 @@ void OV2640_Window_Set(u16 sx,u16 sy,u16 width,u16 height)
  	endy=sy+height/2;
 	
 	SCCB_WR_Reg(0XFF,0X01);			
-	temp=SCCB_RD_Reg(0X03);				//��ȡVref֮ǰ��ֵ
+	temp=SCCB_RD_Reg(0X03);				//读取Vref之前的值
 	temp&=0XF0;
 	temp|=((endy&0X03)<<2)|(sy&0X03);
-	SCCB_WR_Reg(0X03,temp);				//����Vref��start��end�����2λ
-	SCCB_WR_Reg(0X19,sy>>2);			//����Vref��start��8λ
-	SCCB_WR_Reg(0X1A,endy>>2);			//����Vref��end�ĸ�8λ
+	SCCB_WR_Reg(0X03,temp);				//设置Vref的start和end的最低2位
+	SCCB_WR_Reg(0X19,sy>>2);			//设置Vref的start高8位
+	SCCB_WR_Reg(0X1A,endy>>2);			//设置Vref的end的高8位
 	
-	temp=SCCB_RD_Reg(0X32);				//��ȡHref֮ǰ��ֵ
+	temp=SCCB_RD_Reg(0X32);				//读取Href之前的值
 	temp&=0XC0;
 	temp|=((endx&0X07)<<3)|(sx&0X07);
-	SCCB_WR_Reg(0X32,temp);				//����Href��start��end�����3λ
-	SCCB_WR_Reg(0X17,sx>>3);			//����Href��start��8λ
-	SCCB_WR_Reg(0X18,endx>>3);			//����Href��end�ĸ�8λ
+	SCCB_WR_Reg(0X32,temp);				//设置Href的start和end的最低3位
+	SCCB_WR_Reg(0X17,sx>>3);			//设置Href的start高8位
+	SCCB_WR_Reg(0X18,endx>>3);			//设置Href的end的高8位
 }
-//����ͼ�������С
-//OV2640���ͼ��Ĵ�С(�ֱ���),��ȫ�ɸú���ȷ��
-//width,height:����(��Ӧ:horizontal)�͸߶�(��Ӧ:vertical),width��height������4�ı���
-//����ֵ:0,���óɹ�
-//    ����,����ʧ��
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_OutSize_Set
+//函数功能：设置图像输出大小，ov2640输出图像的大小（分辨率），完全由该函数确定
+//传入参数：width，height：宽度（对应：horizontal）和高度（对应：vertical），width和height必须是4的倍数
+//返回值：0，设置成功；其他：设置失败
+/* -------------------------------------------------------------------------- */
 u8 OV2640_OutSize_Set(u16 width,u16 height)
 {
 	u16 outh;
@@ -387,23 +452,27 @@ u8 OV2640_OutSize_Set(u16 width,u16 height)
 	outh=height/4; 
 	SCCB_WR_Reg(0XFF,0X00);	
 	SCCB_WR_Reg(0XE0,0X04);			
-	SCCB_WR_Reg(0X5A,outw&0XFF);		//����OUTW�ĵͰ�λ
-	SCCB_WR_Reg(0X5B,outh&0XFF);		//����OUTH�ĵͰ�λ
+	SCCB_WR_Reg(0X5A,outw&0XFF);		//设置OUTW的低八位
+	SCCB_WR_Reg(0X5B,outh&0XFF);		//设置OUTH的低八位
 	temp=(outw>>8)&0X03;
 	temp|=(outh>>6)&0X04;
-	SCCB_WR_Reg(0X5C,temp);				//����OUTH/OUTW�ĸ�λ 
+	SCCB_WR_Reg(0X5C,temp);				//设置OUTH/OUTW的高位
 	SCCB_WR_Reg(0XE0,0X00);	
 	return 0;
 }
-//����ͼ�񿪴���С
-//��:OV2640_ImageSize_Setȷ������������ֱ��ʴӴ�С.
-//�ú������������Χ������п���,����OV2640_OutSize_Set�����
-//ע��:�������Ŀ��Ⱥ͸߶�,������ڵ���OV2640_OutSize_Set�����Ŀ��Ⱥ͸߶�
-//     OV2640_OutSize_Set���õĿ��Ⱥ͸߶�,���ݱ��������õĿ��Ⱥ͸߶�,��DSP
-//     �Զ��������ű���,������ⲿ�豸.
-//width,height:����(��Ӧ:horizontal)�͸߶�(��Ӧ:vertical),width��height������4�ı���
-//����ֵ:0,���óɹ�
-//    ����,����ʧ��
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_ImageWin_Set
+//函数功能：设置图像开窗大小
+//由：OV2640_ImageWin_Set确定传感器输出分辨率从大小
+//该函数则在这个范围上面进行开窗，用于OV2640_ImageSize_Set的输出
+//注意：本函数的宽度和高度，必须大于等于OV2640_OutSize_Set函数确定的宽度和高度
+//		OV2640_OutSize_Set设置的宽度和高度，根据本函数设置的宽度和高度，由DSP
+//		自动计算缩放比例，输出给外部设备
+//传入参数：width，height：宽度（对应：horizontal）和高度（对应：vertical），width和height必须是4的倍数
+//返回值：0，设置成功；其他：设置失败
+/* -------------------------------------------------------------------------- */
 u8 OV2640_ImageWin_Set(u16 offx,u16 offy,u16 width,u16 height)
 {
 	u16 hsize;
@@ -415,24 +484,28 @@ u8 OV2640_ImageWin_Set(u16 offx,u16 offy,u16 width,u16 height)
 	vsize=height/4;
 	SCCB_WR_Reg(0XFF,0X00);	
 	SCCB_WR_Reg(0XE0,0X04);					
-	SCCB_WR_Reg(0X51,hsize&0XFF);		//����H_SIZE�ĵͰ�λ
-	SCCB_WR_Reg(0X52,vsize&0XFF);		//����V_SIZE�ĵͰ�λ
-	SCCB_WR_Reg(0X53,offx&0XFF);		//����offx�ĵͰ�λ
-	SCCB_WR_Reg(0X54,offy&0XFF);		//����offy�ĵͰ�λ
+	SCCB_WR_Reg(0X51,hsize&0XFF);		//设置H_SIZE的低八位
+	SCCB_WR_Reg(0X52,vsize&0XFF);		//设置V_SIZE的低八位
+	SCCB_WR_Reg(0X53,offx&0XFF);		//设置offx的低八位
+	SCCB_WR_Reg(0X54,offy&0XFF);		//设置offy的低八位
 	temp=(vsize>>1)&0X80;
 	temp|=(offy>>4)&0X70;
 	temp|=(hsize>>5)&0X08;
 	temp|=(offx>>8)&0X07; 
-	SCCB_WR_Reg(0X55,temp);				//����H_SIZE/V_SIZE/OFFX,OFFY�ĸ�λ
-	SCCB_WR_Reg(0X57,(hsize>>2)&0X80);	//����H_SIZE/V_SIZE/OFFX,OFFY�ĸ�λ
+	SCCB_WR_Reg(0X55,temp);				//设置H_SIZE/V_SIZE/OFFX,OFFY的高位
+	SCCB_WR_Reg(0X57,(hsize>>2)&0X80);	//设置H_SIZE/V_SIZE/OFFX,OFFY的高位
 	SCCB_WR_Reg(0XE0,0X00);	
 	return 0;
 } 
-//�ú�������ͼ��ߴ��С,Ҳ������ѡ��ʽ������ֱ���
+
+
+/* -------------------------------------------------------------------------- */
+//函数名称：OV2640_ImageSize_Set
+//函数功能：该函数设置图像尺寸大小，也就是所选格式的输出分辨率
 //UXGA:1600*1200,SVGA:800*600,CIF:352*288
-//width,height:ͼ����Ⱥ�ͼ��߶�
-//����ֵ:0,���óɹ�
-//    ����,����ʧ��
+//传入参数：width,height:图像宽度和高度
+//返回值：0，设置成功；其他：设置失败
+/* -------------------------------------------------------------------------- */
 u8 OV2640_ImageSize_Set(u16 width,u16 height)
 { 
 	u8 temp; 
