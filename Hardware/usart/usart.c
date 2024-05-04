@@ -49,38 +49,16 @@ void usart_init(void)
 	usart_transmit_config(USART0,USART_TRANSMIT_ENABLE);//使能发送
 
 	//串口中断配置
+	nvic_irq_enable(USART0_IRQn,2);
 	usart_interrupt_enable(USART0,USART_INT_RBNE);//读数据缓存区非空中断和过载错误中断
 	usart_interrupt_enable(USART0,USART_INT_IDLE);//DLE线检测中断
-	nvic_irq_enable(USART0_IRQn,2);
-
-
-	
-	
-	
-}
-
-
-/* -------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------- */
-void USART0_IRQHandler(void)
-{    
-    if(usart_interrupt_flag_get(USART0,USART_INT_FLAG_RBNE) != RESET) // 接收缓冲区不为空    
-    {        
-         g_recv_buff[g_recv_length++] = usart_data_receive(USART0);  // 把接收到的数据放到缓冲区中    
-    }        
-    if(usart_interrupt_flag_get(USART0,USART_INT_FLAG_IDLE) == SET) // 检测到帧中断    
-    {        
-        usart_data_receive(USART0); // 必须要读，读出来的值不能要        
-        g_recv_buff[g_recv_length] = '\0';        
-        g_recv_complete_flag = SET;// 接收完成        
-    }
 }
 
 
 /* -------------------------------------------------------------------------- */
 //函数名称：usart_send_data
 //函数功能：发送一个字节
-//传入参数：ucch，需要传入的字节
+//传入参数：ucch，需要发送的字节
 //返回值：无
 //参考：嘉立创文档
 //时间：2024.5.4
@@ -109,12 +87,36 @@ void usart_send_String(uint8_t *ucstr)
 }
 
 
+
 /* -------------------------------------------------------------------------- */
 //重写fputc函数，能够将C语言中的printf函数打印到串口
 /* -------------------------------------------------------------------------- */
 int fputc(int ch, FILE *f)
 {
-    usart_data_transmit(USART0, (uint8_t) ch);
-    while(RESET == usart_flag_get(USART0, USART_FLAG_TBE));
-    return ch;
+     usart_send_data(ch);
+     // 等待发送数据缓冲区标志置位
+     return ch;
 }
+
+
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+void USART0_IRQHandler(void)
+{    
+    if(usart_interrupt_flag_get(USART0,USART_INT_FLAG_RBNE) != RESET) // 接收缓冲区不为空    
+    {        
+         g_recv_buff[g_recv_length++] = usart_data_receive(USART0);  // 把接收到的数据放到缓冲区中    
+    }        
+    if(usart_interrupt_flag_get(USART0,USART_INT_FLAG_IDLE) == SET) // 检测到帧中断    
+    {        
+		usart_interrupt_flag_clear(USART0, USART_INT_FLAG_IDLE);
+        usart_data_receive(USART0); // 必须要读，读出来的值不能要        
+        g_recv_buff[g_recv_length] = '\0';        
+        g_recv_complete_flag = SET;// 接收完成        
+    }
+}
+
+
+
+
+

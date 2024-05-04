@@ -29,7 +29,8 @@ int main(void)
     usart_init();
     // LCD_Init();//屏幕初始化
     // LCD_Fill(0,0,LCD_W,LCD_H,WHITE);//清全屏为白色
-    printf("ik")
+    printf("yes\n");
+    usart_send_String("ok\n");
     while(1)
     {           
         // LCD_ShowChinese(40,0,"中电子",RED,WHITE,32,0);
