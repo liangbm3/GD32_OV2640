@@ -48,10 +48,10 @@ void usart_init(void)
 	usart_receive_config(BSP_USART,USART_RECEIVE_ENABLE);//使能接收
 	usart_transmit_config(BSP_USART,USART_TRANSMIT_ENABLE);//使能发送
 
-	//串口中断配置
-	nvic_irq_enable(BSP_USART_IRQ, 2);
-	usart_interrupt_enable(BSP_USART,USART_INT_RBNE);//读数据缓存区非空中断和过载错误中断
-	usart_interrupt_enable(BSP_USART,USART_INT_IDLE);//DLE线检测中断
+	// //串口中断配置
+	// nvic_irq_enable(BSP_USART_IRQ, 2);
+	// usart_interrupt_enable(BSP_USART,USART_INT_RBNE);//读数据缓存区非空中断和过载错误中断
+	// usart_interrupt_enable(BSP_USART,USART_INT_IDLE);//DLE线检测中断
 }
 
 
@@ -93,28 +93,28 @@ void usart_send_string(uint8_t *ucstr)
 /* -------------------------------------------------------------------------- */
 int fputc(int ch, FILE *f)
 {
-     usart_send_data(ch);
-     // 等待发送数据缓冲区标志置位
-     return ch;
+    usart_data_transmit(USART0, (uint8_t) ch);
+    while(RESET == usart_flag_get(USART0, USART_FLAG_TBE));
+    return ch;
 }
 
 
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
-void BSP_USART_IRQHandler(void)
-{    
-    if(usart_interrupt_flag_get(BSP_USART,USART_INT_FLAG_RBNE) == SET) // 接收缓冲区不为空    
-    {        
-         g_recv_buff[g_recv_length++] = usart_data_receive(BSP_USART);  // 把接收到的数据放到缓冲区中    
-    }        
-    if(usart_interrupt_flag_get(BSP_USART,USART_INT_FLAG_IDLE) == SET) // 检测到帧中断    
-    {        
-		usart_interrupt_flag_clear(BSP_USART, USART_INT_FLAG_IDLE);
-        usart_data_receive(BSP_USART); // 必须要读，读出来的值不能要        
-        g_recv_buff[g_recv_length] = '\0';        
-        g_recv_complete_flag = SET;// 接收完成        
-    }
-}
+// void BSP_USART_IRQHandler(void)
+// {    
+//     if(usart_interrupt_flag_get(BSP_USART,USART_INT_FLAG_RBNE) == SET) // 接收缓冲区不为空    
+//     {        
+//          g_recv_buff[g_recv_length++] = usart_data_receive(BSP_USART);  // 把接收到的数据放到缓冲区中    
+//     }        
+//     if(usart_interrupt_flag_get(BSP_USART,USART_INT_FLAG_IDLE) == SET) // 检测到帧中断    
+//     {        
+// 		usart_interrupt_flag_clear(BSP_USART, USART_INT_FLAG_IDLE);
+//         usart_data_receive(BSP_USART); // 必须要读，读出来的值不能要        
+//         g_recv_buff[g_recv_length] = '\0';        
+//         g_recv_complete_flag = SET;// 接收完成        
+//     }
+// }
 
 
 
