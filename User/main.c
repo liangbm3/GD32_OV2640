@@ -16,9 +16,9 @@
 #include "gd32e23x.h"
 #include "systick.h"
 #include <stdio.h>
-#include "pic.h"
-#include "lcd.h"
-#include "lcd_init.h"
+// #include "pic.h"
+// #include "lcd.h"
+// #include "lcd_init.h"
 #include "usart.h"
 #include "stdlib.h"
 #include "string.h"
@@ -26,24 +26,24 @@ int main(void)
 {
     float t = 0;
     systick_config();//滴答定时器初始化 1ms
-
-    LCD_Init();//屏幕初始化
-    LCD_Fill(0,0,LCD_W,LCD_H,WHITE);//清全屏为白色
-    
+    usart_init();
+    // LCD_Init();//屏幕初始化
+    // LCD_Fill(0,0,LCD_W,LCD_H,WHITE);//清全屏为白色
+    printf("ik")
     while(1)
     {           
-        LCD_ShowChinese(40,0,"中电子",RED,WHITE,32,0);
-        LCD_ShowString(0,16*2,"LCD_W:",BLACK,WHITE,16,0);
-        LCD_ShowIntNum(48,16*2,LCD_W,3,BLACK,WHITE,16);
-        LCD_ShowString(80,16*2,"LCD_H:",BLACK,WHITE,16,0);
-        LCD_ShowIntNum(128,16*2,LCD_H,3,BLACK,WHITE,16);
+        // LCD_ShowChinese(40,0,"中电子",RED,WHITE,32,0);
+        // LCD_ShowString(0,16*2,"LCD_W:",BLACK,WHITE,16,0);
+        // LCD_ShowIntNum(48,16*2,LCD_W,3,BLACK,WHITE,16);
+        // LCD_ShowString(80,16*2,"LCD_H:",BLACK,WHITE,16,0);
+        // LCD_ShowIntNum(128,16*2,LCD_H,3,BLACK,WHITE,16);
                 
-        LCD_ShowString(0,16*3,"Nun:",BLACK,WHITE,16,0);
-        LCD_ShowFloatNum1(8*4,16*3,t,4,BLACK,WHITE,16);
-                
+        // LCD_ShowString(0,16*3,"Nun:",BLACK,WHITE,16,0);
+        // LCD_ShowFloatNum1(8*4,16*3,t,4,BLACK,WHITE,16);
+        usart_send_String("hello\n");
         t+=0.11;
-
-       delay_1ms(10);
+        printf("666:%d\n",t);
+        delay_1ms(10);
            /* 等待数据传输完成 INTERRUPT */    
         if(g_recv_complete_flag)  // 数据接收完成            
         {                

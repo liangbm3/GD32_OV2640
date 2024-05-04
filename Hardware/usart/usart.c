@@ -17,7 +17,7 @@ uint8_t  g_recv_complete_flag = 0;
 //作者：lbm
 //时间：2042.5.4
 /* -------------------------------------------------------------------------- */
-void uart_init(void)
+void usart_init(void)
 {
 	//开启时钟
 	rcu_periph_clock_enable(RCU_USART0);//开启串口时钟
@@ -42,16 +42,19 @@ void uart_init(void)
 	usart_parity_config(USART0,USART_PM_NONE);//没有校验位
 	usart_word_length_set(USART0,USART_WL_8BIT);//8位数据位
 	usart_stop_bit_set(USART0,USART_STB_1BIT);//1位停止位
+	
+	//使能串口
+	usart_enable(USART0);//使能串口
+	usart_receive_config(USART0,USART_RECEIVE_ENABLE);//使能接收
+	usart_transmit_config(USART0,USART_TRANSMIT_ENABLE);//使能发送
 
 	//串口中断配置
 	usart_interrupt_enable(USART0,USART_INT_RBNE);//读数据缓存区非空中断和过载错误中断
 	usart_interrupt_enable(USART0,USART_INT_IDLE);//DLE线检测中断
 	nvic_irq_enable(USART0_IRQn,2);
 
-	//使能串口
-	usart_receive_config(USART0,USART_RECEIVE_ENABLE);//使能接收
-	usart_transmit_config(USART0,USART_TRANSMIT_ENABLE);//使能发送
-	usart_enable(USART0);//使能串口
+
+	
 	
 	
 }

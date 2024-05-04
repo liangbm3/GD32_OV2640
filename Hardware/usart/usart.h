@@ -1,8 +1,8 @@
 #ifndef __USART_H
 #define __USART_H
-#include "stdio.h"	
 #include "systick.h"
 #include <stdint.h>
+#include "stdio.h"
 #include "gd32e23x.h"
 #ifndef u8
 #define u8 uint8_t
@@ -26,12 +26,12 @@
 //RX端口：
 #define RCU_RX RCU_GPIOA
 #define PORT_RX GPIOA
-#define GPIO_RX GPIO_PIN_3
+#define GPIO_RX GPIO_PIN_10
 
 //TX端口：
 #define RCU_TX RCU_GPIOA
 #define PORT_TX GPIOA
-#define GPIO_TX GPIO_PIN_4
+#define GPIO_TX GPIO_PIN_9
 
 
 /* -------------------------------------------------------------------------- */
@@ -54,7 +54,9 @@ extern uint8_t  g_recv_complete_flag; 						 // ½ÓÊÕÍê³É±êÖ¾Î»
 #define BUAD_RATE 115200
   	
 
-void uart_init(void);
+void usart_init(void);
+void usart_send_data(uint8_t ucch); 
+void usart_send_String(uint8_t *ucstr);
 #endif
 
 
