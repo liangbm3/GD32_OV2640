@@ -19,7 +19,9 @@
 #include "pic.h"
 #include "lcd.h"
 #include "lcd_init.h"
-
+#include "usart.h"
+#include "stdlib.h"
+#include "string.h"
 int main(void)
 {
     float t = 0;
@@ -41,6 +43,15 @@ int main(void)
                 
         t+=0.11;
 
-       delay_1ms(1000);        
+       delay_1ms(10);
+           /* 等待数据传输完成 INTERRUPT */    
+        if(g_recv_complete_flag)  // 数据接收完成            
+        {                
+            g_recv_complete_flag = RESET; // 等待下次接收                
+            printf("g_recv_length:%d ",g_recv_length);                 
+            printf("Interrupt recv:%s\r\n",g_recv_buff);  // 打印接收的数据                 
+            memset(g_recv_buff,0,g_recv_length);  // 清空数组                 
+            g_recv_length = 0;             
+        }        
     }
 }

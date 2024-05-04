@@ -2,38 +2,59 @@
 #define __USART_H
 #include "stdio.h"	
 #include "systick.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//������ֻ��ѧϰʹ�ã�δ���������ɣ��������������κ���;
-//ALIENTEK STM32������
-//����1��ʼ��		   
-//����ԭ��@ALIENTEK
-//������̳:www.openedv.com
-//�޸�����:2012/8/18
-//�汾��V1.5
-//��Ȩ���У�����ؾ���
-//Copyright(C) �������������ӿƼ����޹�˾ 2009-2019
-//All rights reserved
-//********************************************************************************
-//V1.3�޸�˵�� 
-//֧����Ӧ��ͬƵ���µĴ��ڲ���������.
-//�����˶�printf��֧��
-//�����˴��ڽ��������.
-//������printf��һ���ַ���ʧ��bug
-//V1.4�޸�˵��
-//1,�޸Ĵ��ڳ�ʼ��IO��bug
-//2,�޸���USART_RX_STA,ʹ�ô����������ֽ���Ϊ2��14�η�
-//3,������USART_REC_LEN,���ڶ��崮������������յ��ֽ���(������2��14�η�)
-//4,�޸���EN_USART1_RX��ʹ�ܷ�ʽ
-//V1.5�޸�˵��
-//1,�����˶�UCOSII��֧��
-#define USART_REC_LEN  			200  	//�����������ֽ��� 200
-#define EN_USART1_RX 			1		//ʹ�ܣ�1��/��ֹ��0������1����
-	  	
-extern u8  USART_RX_BUF[USART_REC_LEN]; //���ջ���,���USART_REC_LEN���ֽ�.ĩ�ֽ�Ϊ���з� 
-extern u16 USART_RX_STA;         		//����״̬���	
-//����봮���жϽ��գ��벻Ҫע�����º궨��
-void uart_init(u32 bound);
-void SendRAMDate(u32 Len,unsigned char *strp);
+#include <stdint.h>
+#include "gd32e23x.h"
+#ifndef u8
+#define u8 uint8_t
+#endif
+
+#ifndef u16
+#define u16 uint16_t
+#endif
+
+#ifndef u32
+#define u32 uint32_t
+#endif
+
+
+/* -------------------------------------------------------------------------- */
+//串口宏定义
+//RX    PA3
+//TX    PA4
+/* -------------------------------------------------------------------------- */
+
+//RX端口：
+#define RCU_RX RCU_GPIOA
+#define PORT_RX GPIOA
+#define GPIO_RX GPIO_PIN_3
+
+//TX端口：
+#define RCU_TX RCU_GPIOA
+#define PORT_TX GPIOA
+#define GPIO_TX GPIO_PIN_4
+
+
+/* -------------------------------------------------------------------------- */
+//串口变量定义
+/* -------------------------------------------------------------------------- */
+
+//串口缓冲区的数据长度
+#define USART_RECEIVE_LENGTH 4096
+
+extern uint8_t  g_recv_buff[USART_RECEIVE_LENGTH]; // ½ÓÊÕ»º³åÇø
+extern uint16_t g_recv_length;										 // ½ÓÊÕÊý¾Ý³¤¶È
+extern uint8_t  g_recv_complete_flag; 						 // ½ÓÊÕÍê³É±êÖ¾Î»
+
+
+/* -------------------------------------------------------------------------- */
+//其他宏定义
+/* -------------------------------------------------------------------------- */
+
+//波特率：
+#define BUAD_RATE 115200
+  	
+
+void uart_init(void);
 #endif
 
 

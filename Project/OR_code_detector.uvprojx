@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\Firmware\GD32E23x_standard_peripheral\Include;..\Hardware\lcd;..\Hardware\OV2640;..\Hardware\SPI;..\Hardware\TIMER;..\Hardware\TPAD;..\Firmware\CMSIS\Core</IncludePath>
+              <IncludePath>..\User;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\Firmware\GD32E23x_standard_peripheral\Include;..\Hardware\lcd;..\Hardware\OV2640;..\Hardware\SPI;..\Hardware\TIMER;..\Hardware\TPAD;..\Firmware\CMSIS\Core;..\Hardware\usart</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -551,6 +551,11 @@
               <FileName>sccb.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\OV2640\sccb.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\usart\usart.c</FilePath>
             </File>
           </Files>
         </Group>

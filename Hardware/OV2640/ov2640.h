@@ -6,8 +6,8 @@
 
 /* -------------------------------------------------------------------------- */
 //端口宏定义
-//VSYNC     PA2
-//PWDN      PA3
+//VSYNC     PC13
+//PWDN      PC14
 //RST       PA4
 //HREF      PA5
 //DATA0     PA6
@@ -17,19 +17,19 @@
 //DATA4     PA10
 //DATA5     PA11
 //DATA6     pA12
-//DATA7     PA13
-//PCLK      PA14
+//DATA7     PA15
+//PCLK      PB15
 /* -------------------------------------------------------------------------- */
 
 //VSYNC端口宏定义
-#define RCU_VSYNC RCU_GPIOA
-#define PORT_VSYNC GPIOA
-#define GPIO_VSYNC GPIO_PIN_2
+#define RCU_VSYNC RCU_GPIOC
+#define PORT_VSYNC GPIOC
+#define GPIO_VSYNC GPIO_PIN_13
 
 //PWDN端口宏定义
-#define RCU_PWDN RCU_GPIOA
-#define PORT_PWDN GPIOA
-#define GPIO_PWDN GPIO_PIN_3
+#define RCU_PWDN RCU_GPIOC
+#define PORT_PWDN GPIOC
+#define GPIO_PWDN GPIO_PIN_14
 
 //RST端口宏定义
 #define RCU_RST RCU_GPIOA
@@ -42,9 +42,9 @@
 #define GPIO_HREF GPIO_PIN_5
 
 //clock端口宏定义
-#define RCU_CLOCK RCU_GPIOA
-#define PORT_CLOCK GPIOA
-#define GPIO_CLOCK GPIO_PIN_14
+#define RCU_CLOCK RCU_GPIOB
+#define PORT_CLOCK GPIOB
+#define GPIO_CLOCK GPIO_PIN_15
 
 //数据输入端口定义
 #define RCU_DATA_0 RCU_GPIOA
@@ -77,7 +77,7 @@
 
 #define RCU_DATA_7 RCU_GPIOA
 #define PORT_DATA_7 GPIOA
-#define GPIO_DATA_7 GPIO_PIN_13
+#define GPIO_DATA_7 GPIO_PIN_15
 
 
 /* -------------------------------------------------------------------------- */
