@@ -1,12 +1,29 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_rtc.c
     \brief   RTC driver
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23X
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -272,7 +289,7 @@ void rtc_current_time_get(rtc_parameter_struct* rtc_initpara_struct)
     rtc_initpara_struct->rtc_second = (uint8_t)GET_TIME_SC(temp_tr);
     rtc_initpara_struct->rtc_factor_asyn = (uint16_t)GET_PSC_FACTOR_A(temp_pscr);
     rtc_initpara_struct->rtc_factor_syn = (uint16_t)GET_PSC_FACTOR_S(temp_pscr);
-    rtc_initpara_struct->rtc_am_pm = (uint32_t)(temp_tr & RTC_TIME_PM); 
+    rtc_initpara_struct->rtc_am_pm = (uint32_t)(temp_pscr & RTC_TIME_PM); 
     rtc_initpara_struct->rtc_display_format = (uint32_t)(temp_ctlr & RTC_CTL_CS);
 }
 
@@ -467,6 +484,7 @@ uint32_t rtc_alarm_subsecond_get(void)
     return ((uint32_t)(RTC_ALRM0SS & RTC_ALRM0SS_SSC));
 }
 
+#if defined(GD32E230)
 /*!
     \brief      enable RTC time-stamp
     \param[in]  edge: specify which edge to detect of time-stamp
@@ -514,7 +532,7 @@ void rtc_timestamp_disable(void)
     /* enable the write protection */
     RTC_WPK = RTC_LOCK_KEY;
 }
-
+#endif
 /*!
     \brief      get RTC timestamp time and date
     \param[in]  none
@@ -637,7 +655,7 @@ void rtc_tamper_disable(uint32_t source)
     \brief      enable specified RTC interrupt
     \param[in]  interrupt: specify which interrupt source to be enabled
                 only one parameter can be selected which is shown as below:
-      \arg        RTC_INT_TIMESTAMP: timestamp interrupt
+      \arg        RTC_INT_TIMESTAMP: timestamp interrupt, only available for GD32E230
       \arg        RTC_INT_ALARM: alarm interrupt
       \arg        RTC_INT_TAMP: tamp interrupt
     \param[out] none
@@ -662,7 +680,7 @@ void rtc_interrupt_enable(uint32_t interrupt)
     \brief      disble specified RTC interrupt
     \param[in]  interrupt: specify which interrupt source to be disabled
                 only one parameter can be selected which is shown as below:
-      \arg        RTC_INT_TIMESTAMP: timestamp interrupt
+      \arg        RTC_INT_TIMESTAMP: timestamp interrupt, only available for GD32E230
       \arg        RTC_INT_ALARM: alarm interrupt
       \arg        RTC_INT_TAMP: tamp interrupt
     \param[out] none
@@ -689,9 +707,9 @@ void rtc_interrupt_disable(uint32_t interrupt)
                 only one parameter can be selected which is shown as below:
       \arg        RTC_FLAG_RECALIBRATION: recalibration pending flag
       \arg        RTC_FLAG_TAMP1: tamper 1 event flag
-      \arg        RTC_FLAG_TAMP0: tamper 0 event flag
-      \arg        RTC_FLAG_TIMESTAMP_OVERFLOW: time-stamp overflow event flag
-      \arg        RTC_FLAG_TIMESTAMP: time-stamp event flag
+      \arg        RTC_FLAG_TAMP0: tamper 0 event flag, only available for GD32E230
+      \arg        RTC_FLAG_TIMESTAMP_OVERFLOW: time-stamp overflow event flag, only available for GD32E230
+      \arg        RTC_FLAG_TIMESTAMP: time-stamp event flag, only available for GD32E230
       \arg        RTC_FLAG_ALARM0: alarm event flag
       \arg        RTC_FLAG_INIT: init mode event flag
       \arg        RTC_FLAG_RSYN: time and date registers synchronized event flag
@@ -716,9 +734,9 @@ FlagStatus rtc_flag_get(uint32_t flag)
     \param[in]  flag: specify which flag to clear
                 only one parameter can be selected which is shown as below:
       \arg        RTC_FLAG_TAMP1: tamper 1 event flag
-      \arg        RTC_FLAG_TAMP0: tamper 0 event flag
-      \arg        RTC_FLAG_TIMESTAMP_OVERFLOW: time-stamp overflow event flag
-      \arg        RTC_FLAG_TIMESTAMP: time-stamp event flag
+      \arg        RTC_FLAG_TAMP0: tamper 0 event flag, only available for GD32E230
+      \arg        RTC_FLAG_TIMESTAMP_OVERFLOW: time-stamp overflow event flag, only available for GD32E230
+      \arg        RTC_FLAG_TIMESTAMP: time-stamp event flag, only available for GD32E230
       \arg        RTC_FLAG_ALARM0: alarm event flag
       \arg        RTC_FLAG_RSYN: time and date registers synchronized event flag
     \param[out] none
@@ -729,13 +747,14 @@ void rtc_flag_clear(uint32_t flag)
     RTC_STAT &= (uint32_t)(~flag);  
 }
 
+#if defined(GD32E230)
 /*!
     \brief      configure rtc alternate output source
     \param[in]  source: specify signal to output
                 only one parameter can be selected which is shown as below:
-      \arg        RTC_CALIBRATION_512HZ: when the LXTAL freqency is 32768Hz and the RTC_PSC 
+      \arg        RTC_CALIBRATION_512HZ: when the LSE freqency is 32768Hz and the RTC_PSC 
                                          is the default value, output 512Hz signal
-      \arg        RTC_CALIBRATION_1HZ: when the LXTAL freqency is 32768Hz and the RTC_PSC 
+      \arg        RTC_CALIBRATION_1HZ: when the LSE freqency is 32768Hz and the RTC_PSC 
                                        is the default value, output 512Hz signal
       \arg        RTC_ALARM_HIGH: when the  alarm flag is set, the output pin is high
       \arg        RTC_ALARM_LOW: when the  Alarm flag is set, the output pin is low
@@ -765,6 +784,7 @@ void rtc_alter_output_config(uint32_t source, uint32_t mode)
     /* enable the write protection */
     RTC_WPK = RTC_LOCK_KEY;
 }
+#endif
 
 /*!
     \brief      configure RTC calibration register

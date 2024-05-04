@@ -1,3 +1,18 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file  system_gd32e23x.c
     \brief CMSIS Cortex-M23 Device Peripheral Access Layer Source File for
@@ -5,7 +20,6 @@
 */
 
 /* Copyright (c) 2012 ARM LIMITED
-   Copyright (c) 2023, GigaDevice Semiconductor Inc.
 
    All rights reserved.
    Redistribution and use in source and binary forms, with or without
@@ -49,18 +63,6 @@
 #define __SYSTEM_CLOCK_72M_PLL_HXTAL         (uint32_t)(72000000)
 //#define __SYSTEM_CLOCK_72M_PLL_IRC8M_DIV2    (uint32_t)(72000000)
 
-#define RCU_MODIFY(__delay)     do{                                     \
-                                    volatile uint32_t i;                \
-                                    if(0 != __delay){                   \
-                                        RCU_CFG0 |= RCU_AHB_CKSYS_DIV2; \
-                                        for(i=0; i<__delay; i++){       \
-                                        }                               \
-                                        RCU_CFG0 |= RCU_AHB_CKSYS_DIV4; \
-                                        for(i=0; i<__delay; i++){       \
-                                        }                               \
-                                    }                                   \
-                                }while(0)
-
 #define SEL_IRC8M       0x00
 #define SEL_HXTAL       0x01
 #define SEL_PLL         0x02
@@ -98,14 +100,11 @@ void SystemInit (void)
     RCU_CTL0 |= RCU_CTL0_IRC8MEN;
     while(0U == (RCU_CTL0 & RCU_CTL0_IRC8MSTB)){
     }
-
-    RCU_MODIFY(0x80);
-    RCU_CFG0 &= ~RCU_CFG0_SCS;
-    RCU_CTL0 &= ~(RCU_CTL0_HXTALEN | RCU_CTL0_CKMEN | RCU_CTL0_PLLEN | RCU_CTL0_HXTALBPS);
     /* reset RCU */
     RCU_CFG0 &= ~(RCU_CFG0_SCS | RCU_CFG0_AHBPSC | RCU_CFG0_APB1PSC | RCU_CFG0_APB2PSC |\
                   RCU_CFG0_ADCPSC | RCU_CFG0_CKOUTSEL | RCU_CFG0_CKOUTDIV | RCU_CFG0_PLLDV);
     RCU_CFG0 &= ~(RCU_CFG0_PLLSEL | RCU_CFG0_PLLMF | RCU_CFG0_PLLMF4 | RCU_CFG0_PLLDV);
+    RCU_CTL0 &= ~(RCU_CTL0_HXTALEN | RCU_CTL0_CKMEN | RCU_CTL0_PLLEN | RCU_CTL0_HXTALBPS);
     RCU_CFG1 &= ~(RCU_CFG1_PREDV);
     RCU_CFG2 &= ~(RCU_CFG2_USART0SEL | RCU_CFG2_ADCSEL);
     RCU_CFG2 &= ~RCU_CFG2_IRC28MDIV;
@@ -184,7 +183,7 @@ static void system_clock_8m_hxtal(void)
     RCU_CFG0 |= RCU_CKSYSSRC_HXTAL;
     
     /* wait until HXTAL is selected as system clock */
-    while(RCU_SCSS_HXTAL != (RCU_CFG0 & RCU_CFG0_SCSS)){
+    while(0U == (RCU_CFG0 & RCU_SCSS_HXTAL)){
     }
 }
 
@@ -241,7 +240,7 @@ static void system_clock_72m_hxtal(void)
     RCU_CFG0 |= RCU_CKSYSSRC_PLL;
 
     /* wait until PLL is selected as system clock */
-    while(RCU_SCSS_PLL != (RCU_CFG0 & RCU_CFG0_SCSS)){
+    while(0U == (RCU_CFG0 & RCU_SCSS_PLL)){
     }
 }
 
@@ -297,7 +296,7 @@ static void system_clock_72m_irc8m(void)
     RCU_CFG0 |= RCU_CKSYSSRC_PLL;
 
     /* wait until PLL is selected as system clock */
-    while(RCU_SCSS_PLL != (RCU_CFG0 & RCU_CFG0_SCSS)){
+    while(0U == (RCU_CFG0 & RCU_SCSS_PLL)){
     }
 }
 
@@ -322,7 +321,7 @@ static void system_clock_8m_irc8m(void)
     RCU_CFG0 |= RCU_CKSYSSRC_IRC8M;
     
     /* wait until IRC8M is selected as system clock */
-    while(RCU_SCSS_IRC8M != (RCU_CFG0 & RCU_CFG0_SCSS)){
+    while(0U != (RCU_CFG0 & RCU_SCSS_IRC8M)){
     }
 }
 #endif /* __SYSTEM_CLOCK_8M_HXTAL */

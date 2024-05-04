@@ -2,11 +2,13 @@
     \file  gd32e23x_rtc.h
     \brief definitions for the RTC 
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -82,6 +84,7 @@ OF SUCH DAMAGE.
 #define RTC_DATE_YRT                       BITS(20,23)                                 /*!< year tens in BCD code */
 
 /* RTC_CTL */
+#if defined(GD32E230)
 #define RTC_CTL_TSEG                       BIT(3)                                      /*!< valid event edge of time-stamp */
 #define RTC_CTL_REFEN                      BIT(4)                                      /*!< reference clock detection function enable */
 #define RTC_CTL_BPSHAD                     BIT(5)                                      /*!< shadow registers bypass control */
@@ -97,8 +100,18 @@ OF SUCH DAMAGE.
 #define RTC_CTL_OPOL                       BIT(20)                                     /*!< output polarity */
 #define RTC_CTL_OS                         BITS(21,22)                                 /*!< output selection */
 #define RTC_CTL_COEN                       BIT(23)                                     /*!< calibration output enable */
-
+#elif defined(GD32E231)
+#define RTC_CTL_REFEN                      BIT(4)                                      /*!< reference clock detection function enable */
+#define RTC_CTL_BPSHAD                     BIT(5)                                      /*!< shadow registers bypass control */
+#define RTC_CTL_CS                         BIT(6)                                      /*!< display format of clock system */
+#define RTC_CTL_ALRM0EN                    BIT(8)                                      /*!< alarm function enable */
+#define RTC_CTL_ALRM0IE                    BIT(12)                                     /*!< RTC alarm interrupt enable */
+#define RTC_CTL_A1H                        BIT(16)                                     /*!< add 1 hour(summer time change) */
+#define RTC_CTL_S1H                        BIT(17)                                     /*!< subtract 1 hour(winter time change) */
+#define RTC_CTL_DSM                        BIT(18)                                     /*!< daylight saving mark */
+#endif
 /* RTC_STAT */
+#if defined(GD32E230)
 #define RTC_STAT_ALRM0WF                   BIT(0)                                      /*!< alarm configuration can be write flag */
 #define RTC_STAT_SOPF                      BIT(3)                                      /*!< shift function operation pending flag */
 #define RTC_STAT_YCM                       BIT(4)                                      /*!< year configuration mark status flag */
@@ -111,7 +124,17 @@ OF SUCH DAMAGE.
 #define RTC_STAT_TP0F                      BIT(13)                                     /*!< RTC tamp 0 detected flag */
 #define RTC_STAT_TP1F                      BIT(14)                                     /*!< RTC tamp 1 detected flag */
 #define RTC_STAT_SCPF                      BIT(16)                                     /*!< recalibration pending flag */
-
+#elif defined(GD32E231)
+#define RTC_STAT_ALRM0WF                   BIT(0)                                      /*!< alarm configuration can be write flag */
+#define RTC_STAT_SOPF                      BIT(3)                                      /*!< shift function operation pending flag */
+#define RTC_STAT_YCM                       BIT(4)                                      /*!< year configuration mark status flag */
+#define RTC_STAT_RSYNF                     BIT(5)                                      /*!< register synchronization flag */
+#define RTC_STAT_INITF                     BIT(6)                                      /*!< initialization state flag */
+#define RTC_STAT_INITM                     BIT(7)                                      /*!< enter initialization mode */
+#define RTC_STAT_ALRM0F                    BIT(8)                                      /*!< alarm occurs flag */
+#define RTC_STAT_TP1F                      BIT(14)                                     /*!< RTC tamp 1 detected flag */
+#define RTC_STAT_SCPF                      BIT(16)                                     /*!< recalibration pending flag */
+#endif
 /* RTC_PSC */
 #define RTC_PSC_FACTOR_S                   BITS(0,14)                                  /*!< synchronous prescaler factor */
 #define RTC_PSC_FACTOR_A                   BITS(16,22)                                 /*!< asynchronous prescaler factor */
@@ -168,6 +191,7 @@ OF SUCH DAMAGE.
 #define RTC_HRFC_FREQI                     BIT(15)                                     /*!< increase RTC frequency by 488.5ppm */
 
 /* RTC_TAMP */
+#if defined (GD32E230)
 #define RTC_TAMP_TP0EN                     BIT(0)                                      /*!< tamper 0 detection enable */
 #define RTC_TAMP_TP0EG                     BIT(1)                                      /*!< tamper 0 event trigger edge for RTC tamp 0 input */
 #define RTC_TAMP_TPIE                      BIT(2)                                      /*!< tamper detection interrupt enable */
@@ -184,7 +208,20 @@ OF SUCH DAMAGE.
 #define RTC_TAMP_PC14MDE                   BIT(21)                                     /*!< PC14 mode */
 #define RTC_TAMP_PC15VAL                   BIT(22)                                     /*!< PC15 output value */
 #define RTC_TAMP_PC15MDE                   BIT(23)                                     /*!< PC15 mode */
-
+#elif defined (GD32E231)
+#define RTC_TAMP_TPIE                      BIT(2)                                      /*!< tamper detection interrupt enable */
+#define RTC_TAMP_TP1EN                     BIT(3)                                      /*!< tamper 1 detection enable */
+#define RTC_TAMP_TPTS                      BIT(7)                                      /*!< make tamper function used for timestamp function */
+#define RTC_TAMP_TP1EG                     BIT(4)                                      /*!< tamper 1 event trigger edge for RTC tamp 1 input */
+#define RTC_TAMP_FREQ                      BITS(8,10)                                  /*!< sample frequency of tamper event detection */
+#define RTC_TAMP_FLT                       BITS(11,12)                                 /*!< RTC tamp x filter count setting */
+#define RTC_TAMP_PRCH                      BITS(13,14)                                 /*!< precharge duration time of RTC tamp x */
+#define RTC_TAMP_DISPU                     BIT(15)                                     /*!< RTC tamp x pull up disable bit */
+#define RTC_TAMP_PC14VAL                   BIT(20)                                     /*!< PC14 output value */
+#define RTC_TAMP_PC14MDE                   BIT(21)                                     /*!< PC14 mode */
+#define RTC_TAMP_PC15VAL                   BIT(22)                                     /*!< PC15 output value */
+#define RTC_TAMP_PC15MDE                   BIT(23)                                     /*!< PC15 mode */
+#endif
 /* RTC_ALRM0SS */
 #define RTC_ALRM0SS_SSC                    BITS(0,14)                                  /*!< alarm sub second value */
 #define RTC_ALRM0SS_MASKSSC                BITS(24,27)                                 /*!< mask control bit of SS */
@@ -309,8 +346,8 @@ typedef struct
 
 #define RTC_CALIBRATION_512HZ              RTC_CTL_COEN                                /*!< calibration output of 512Hz is enable */
 #define RTC_CALIBRATION_1HZ                (RTC_CTL_COEN | RTC_CTL_COS)                /*!< calibration output of 1Hz is enable */
-#define RTC_ALARM_HIGH                     RTC_OS_ENABLE                               /*!< enable alarm flag output with high level */
-#define RTC_ALARM_LOW                      (RTC_OS_ENABLE | RTC_CTL_OPOL)              /*!< enable alarm flag output with low level*/
+#define RTC_ALARM_HIGH                     RTC_CTL_OS                                  /*!< enable alarm flag output with high level */
+#define RTC_ALARM_LOW                      (RTC_CTL_OS | RTC_CTL_OPOL)                 /*!< enable alarm flag output with low level*/
 
 #define RTC_24HOUR                         ((uint32_t)0x00000000U)                     /*!< 24-hour format */
 #define RTC_12HOUR                         RTC_CTL_CS                                  /*!< 12-hour format */
@@ -516,10 +553,12 @@ void rtc_alarm_enable(void);
 /* disable RTC alarm */
 ErrStatus rtc_alarm_disable(void);
 
+#if defined(GD32E230)
 /* enable RTC time-stamp */
 void rtc_timestamp_enable(uint32_t edge);
 /* disable RTC time-stamp */
 void rtc_timestamp_disable(void);
+#endif
 /* get RTC timestamp time and date */
 void rtc_timestamp_get(rtc_timestamp_struct* rtc_timestamp);
 /* get RTC time-stamp subsecond */
@@ -538,9 +577,11 @@ void rtc_interrupt_disable(uint32_t interrupt);
 FlagStatus rtc_flag_get(uint32_t flag);
 /* clear specified flag */
 void rtc_flag_clear(uint32_t flag);
+
+#if defined(GD32E230)
 /* configure RTC alternate output source */
 void rtc_alter_output_config(uint32_t source, uint32_t mode);
-
+#endif
 /* configure RTC calibration register */
 ErrStatus rtc_calibration_config(uint32_t window, uint32_t plus, uint32_t minus);
 /* ajust the daylight saving time by adding or substracting one hour from the current time */

@@ -1,12 +1,14 @@
 /*!
-    \file    gd32e23x_usart.h
-    \brief   definitions for the USART
+    \file  gd32e23x_usart.h
+    \brief definitions for the USART
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -94,6 +96,8 @@ OF SUCH DAMAGE.
 #define USART_CTL1_TINV               BIT(17)                        /*!< TX pin level inversion */
 #define USART_CTL1_DINV               BIT(18)                        /*!< data bit level inversion */
 #define USART_CTL1_MSBF               BIT(19)                        /*!< most significant bit first */
+#define USART_CTL1_ABDEN              BIT(20)                        /*!< auto baud rate enable */
+#define USART_CTL1_ABDM               BITS(21,22)                    /*!< auto baud rate mode */
 #define USART_CTL1_RTEN               BIT(23)                        /*!< receiver timeout enable */
 #define USART_CTL1_ADDR               BITS(24,31)                    /*!< address of the USART terminal */
 
@@ -131,6 +135,7 @@ OF SUCH DAMAGE.
 #define USART_RT_BL                   BITS(24,31)                    /*!< block length */
 
 /* USARTx_CMD */
+#define USART_CMD_ABDCMD              BIT(0)                         /*!< auto baudrate detection command */
 #define USART_CMD_SBKCMD              BIT(1)                         /*!< send break command */
 #define USART_CMD_MMCMD               BIT(2)                         /*!< mute mode command */
 #define USART_CMD_RXFCMD              BIT(3)                         /*!< receive data flush command */
@@ -150,6 +155,8 @@ OF SUCH DAMAGE.
 #define USART_STAT_CTS                BIT(10)                        /*!< CTS level */
 #define USART_STAT_RTF                BIT(11)                        /*!< receiver timeout flag */
 #define USART_STAT_EBF                BIT(12)                        /*!< end of block flag */
+#define USART_STAT_ABDE               BIT(14)                        /*!< auto baudrate detection error */
+#define USART_STAT_ABDF               BIT(15)                        /*!< auto baudrate detection flag */
 #define USART_STAT_BSY                BIT(16)                        /*!< busy flag */
 #define USART_STAT_AMF                BIT(17)                        /*!< address match flag */
 #define USART_STAT_SBF                BIT(18)                        /*!< send break flag */
@@ -192,6 +199,7 @@ OF SUCH DAMAGE.
 #define USART_RFCS_RFFINT             BIT(15)                        /*!< receive FIFO full interrupt flag */
 
 /* constants definitions */
+
 /* define the USART bit position and its register index offset */
 #define USART_REGIDX_BIT(regidx, bitpos)    (((uint32_t)(regidx) << 6) | (uint32_t)(bitpos))
 #define USART_REG_VAL(usartx, offset)       (REG32((usartx) + (((uint32_t)(offset) & 0x0000FFFFU) >> 6)))
@@ -219,6 +227,8 @@ typedef enum{
     USART_FLAG_SB = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 18U),          /*!< send break flag */
     USART_FLAG_AM = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 17U),          /*!< ADDR match flag */
     USART_FLAG_BSY = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 16U),         /*!< busy flag */
+    USART_FLAG_ABD = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 15U),         /*!< auto baudrate detection flag */
+    USART_FLAG_ABDE = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 14U),        /*!< auto baudrate detection error */
     USART_FLAG_EB = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 12U),          /*!< end of block flag */
     USART_FLAG_RT = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 11U),          /*!< receiver timeout flag */
     USART_FLAG_CTS = USART_REGIDX_BIT(USART_STAT_REG_OFFSET, 10U),         /*!< CTS level */
@@ -371,6 +381,11 @@ typedef enum {
 #define USART_MSBF_LSB                CTL1_MSBF(0)                   /*!< LSB first */
 #define USART_MSBF_MSB                CTL1_MSBF(1)                   /*!< MSB first */
 
+/* USART auto baud rate detection mode bits definitions */
+#define CTL1_ABDM(regval)             (BITS(21,22) & ((uint32_t)(regval) << 21))
+#define USART_ABDM_FTOR               CTL1_ABDM(0)                   /*!< falling edge to rising edge measurement */
+#define USART_ABDM_FTOF               CTL1_ABDM(1)                   /*!< falling edge to falling edge measurement */
+
 /* USART IrDA low-power enable */
 #define CTL2_IRLP(regval)             (BIT(2) & ((uint32_t)(regval) << 2))
 #define USART_IRLP_LOW                CTL2_IRLP(1)                   /*!< low-power */
@@ -461,6 +476,14 @@ void usart_receiver_timeout_threshold_config(uint32_t usart_periph, uint32_t rti
 void usart_data_transmit(uint32_t usart_periph, uint32_t data);
 /* USART receive data function */
 uint16_t usart_data_receive(uint32_t usart_periph);
+
+/* auto baud rate detection */
+/* enable auto baud rate detection */
+void usart_autobaud_detection_enable(uint32_t usart_periph);
+/* disable auto baud rate detection */
+void usart_autobaud_detection_disable(uint32_t usart_periph);
+/* configure auto baud rate detection mode */
+void usart_autobaud_detection_mode_config(uint32_t usart_periph, uint32_t abdmod);
 
 /* multi-processor communication */
 /* configure address of the USART */
@@ -578,9 +601,9 @@ FlagStatus usart_flag_get(uint32_t usart_periph, usart_flag_enum flag);
 /* clear USART status */
 void usart_flag_clear(uint32_t usart_periph, usart_flag_enum flag);
 /* enable USART interrupt */
-void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum interrupt);
+void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum inttype);
 /* disable USART interrupt */
-void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum interrupt);
+void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum inttype);
 /* enable USART command */
 void usart_command_enable(uint32_t usart_periph, uint32_t cmdtype);
 /* get USART interrupt and flag status */

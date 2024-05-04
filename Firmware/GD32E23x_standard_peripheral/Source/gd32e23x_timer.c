@@ -1,12 +1,29 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_timer.c
     \brief   TIMER driver
 
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -487,7 +504,7 @@ FlagStatus timer_interrupt_flag_get(uint32_t timer_periph, uint32_t interrupt)
 */
 void timer_interrupt_flag_clear(uint32_t timer_periph, uint32_t interrupt)
 {
-    TIMER_INTF(timer_periph) = (~(uint32_t)interrupt);
+    TIMER_INTF(timer_periph) &= (~(uint32_t)interrupt);
 }
 
 /*!
@@ -541,7 +558,7 @@ FlagStatus timer_flag_get(uint32_t timer_periph, uint32_t flag)
 */
 void timer_flag_clear(uint32_t timer_periph, uint32_t flag)
 {
-    TIMER_INTF(timer_periph) = (~(uint32_t)flag);
+    TIMER_INTF(timer_periph) &= (~(uint32_t)flag);
 }
 
 /*!
@@ -1742,9 +1759,9 @@ void timer_master_output_trigger_source_select(uint32_t timer_periph, uint32_t o
     \param[in]  slavemode:
                 only one parameter can be selected which is shown as below:
       \arg        TIMER_SLAVE_MODE_DISABLE: slave mode disable(TIMERx(x=0,2,14))
-      \arg        TIMER_QUAD_DECODER_MODE0: quadrature decoder mode 0(TIMERx(x=0,2))
-      \arg        TIMER_QUAD_DECODER_MODE1: quadrature decoder mode 1(TIMERx(x=0,2))
-      \arg        TIMER_QUAD_DECODER_MODE2: quadrature decoder mode 2(TIMERx(x=0,2))
+      \arg        TIMER_ENCODER_MODE0: encoder mode 0(TIMERx(x=0,2))
+      \arg        TIMER_ENCODER_MODE1: encoder mode 1(TIMERx(x=0,2))
+      \arg        TIMER_ENCODER_MODE2: encoder mode 2(TIMERx(x=0,2))
       \arg        TIMER_SLAVE_MODE_RESTART: restart mode(TIMERx(x=0,2,14))
       \arg        TIMER_SLAVE_MODE_PAUSE: pause mode(TIMERx(x=0,2,14))
       \arg        TIMER_SLAVE_MODE_EVENT: event mode(TIMERx(x=0,2,14))
@@ -1811,9 +1828,9 @@ void timer_external_trigger_config(uint32_t timer_periph, uint32_t extprescaler,
     \param[in]  timer_periph: TIMERx(x=0,2)
     \param[in]  decomode: 
                 only one parameter can be selected which is shown as below:
-      \arg        TIMER_QUAD_DECODER_MODE0: counter counts on CI0FE0 edge depending on CI1FE1 level
-      \arg        TIMER_QUAD_DECODER_MODE1: counter counts on CI1FE1 edge depending on CI0FE0 level
-      \arg        TIMER_QUAD_DECODER_MODE2: counter counts on both CI0FE0 and CI1FE1 edges depending on the level of the other input
+      \arg        TIMER_ENCODER_MODE0: counter counts on CI0FE0 edge depending on CI1FE1 level
+      \arg        TIMER_ENCODER_MODE1: counter counts on CI1FE1 edge depending on CI0FE0 level
+      \arg        TIMER_ENCODER_MODE2: counter counts on both CI0FE0 and CI1FE1 edges depending on the level of the other input
     \param[in]  ic0polarity: 
                 only one parameter can be selected which is shown as below:
       \arg        TIMER_IC_POLARITY_RISING: capture rising edge
@@ -1902,7 +1919,7 @@ void timer_external_trigger_as_external_clock_config(uint32_t timer_periph, uint
         /* reset the CH1CAPFLT bit */
         TIMER_CHCTL0(timer_periph) &= (~(uint32_t)TIMER_CHCTL0_CH1CAPFLT);
         /* set the CH1CAPFLT bit */
-        TIMER_CHCTL0(timer_periph) |= (uint32_t)(extfilter << 12U);
+        TIMER_CHCTL0(timer_periph) |= (uint32_t)(extfilter << 8U);
         /* set the CH1EN bit */
         TIMER_CHCTL2(timer_periph) |= (uint32_t)TIMER_CHCTL2_CH1EN;
     }else{
@@ -1919,7 +1936,7 @@ void timer_external_trigger_as_external_clock_config(uint32_t timer_periph, uint
         /* reset the CH0CAPFLT bit */
         TIMER_CHCTL0(timer_periph) &= (~(uint32_t)TIMER_CHCTL0_CH0CAPFLT);
         /* reset the CH0CAPFLT bit */
-        TIMER_CHCTL0(timer_periph) |= (uint32_t)(extfilter << 4U);
+        TIMER_CHCTL0(timer_periph) |= (uint32_t)extfilter;
         /* set the CH0EN bit */
         TIMER_CHCTL2(timer_periph) |= (uint32_t)TIMER_CHCTL2_CH0EN;
     }

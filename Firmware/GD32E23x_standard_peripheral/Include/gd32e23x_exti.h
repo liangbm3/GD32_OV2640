@@ -2,11 +2,13 @@
     \file    gd32e23x_exti.h
     \brief   definitions for the EXTI
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -41,12 +43,12 @@ OF SUCH DAMAGE.
 #define EXTI                         EXTI_BASE
 
 /* registers definitions */
-#define EXTI_INTEN                  REG32(EXTI + 0x00000000U)       /*!< interrupt enable register */
-#define EXTI_EVEN                   REG32(EXTI + 0x00000004U)       /*!< event enable register */
-#define EXTI_RTEN                   REG32(EXTI + 0x00000008U)       /*!< rising edge trigger enable register */
-#define EXTI_FTEN                   REG32(EXTI + 0x0000000CU)       /*!< falling edge trigger enable register */
-#define EXTI_SWIEV                  REG32(EXTI + 0x00000010U)       /*!< software interrupt event register */
-#define EXTI_PD                     REG32(EXTI + 0x00000014U)       /*!< pending register */
+#define EXTI_INTEN                   REG32(EXTI + 0x00U)      /*!< interrupt enable register */
+#define EXTI_EVEN                    REG32(EXTI + 0x04U)      /*!< event enable register */
+#define EXTI_RTEN                    REG32(EXTI + 0x08U)      /*!< rising edge trigger enable register */
+#define EXTI_FTEN                    REG32(EXTI + 0x0CU)      /*!< falling trigger enable register */
+#define EXTI_SWIEV                   REG32(EXTI + 0x10U)      /*!< software interrupt event register */
+#define EXTI_PD                      REG32(EXTI + 0x14U)      /*!< pending register */
 
 /* bits definitions */
 /* EXTI_INTEN */
@@ -176,30 +178,31 @@ OF SUCH DAMAGE.
 #define EXTI_SWIEV_SWIEV21           BIT(21)                  /*!< software interrupt/event request from line 21 */
 
 /* EXTI_PD */
-#define EXTI_PD_PD0                  BIT(0)                   /*!< interrupt pending status from line 0 */
-#define EXTI_PD_PD1                  BIT(1)                   /*!< interrupt pending status from line 1 */
-#define EXTI_PD_PD2                  BIT(2)                   /*!< interrupt pending status from line 2 */
-#define EXTI_PD_PD3                  BIT(3)                   /*!< interrupt pending status from line 3 */
-#define EXTI_PD_PD4                  BIT(4)                   /*!< interrupt pending status from line 4 */
-#define EXTI_PD_PD5                  BIT(5)                   /*!< interrupt pending status from line 5 */
-#define EXTI_PD_PD6                  BIT(6)                   /*!< interrupt pending status from line 6 */
-#define EXTI_PD_PD7                  BIT(7)                   /*!< interrupt pending status from line 7 */
-#define EXTI_PD_PD8                  BIT(8)                   /*!< interrupt pending status from line 8 */
-#define EXTI_PD_PD9                  BIT(9)                   /*!< interrupt pending status from line 9 */
-#define EXTI_PD_PD10                 BIT(10)                  /*!< interrupt pending status from line 10 */
-#define EXTI_PD_PD11                 BIT(11)                  /*!< interrupt pending status from line 11 */
-#define EXTI_PD_PD12                 BIT(12)                  /*!< interrupt pending status from line 12 */
-#define EXTI_PD_PD13                 BIT(13)                  /*!< interrupt pending status from line 13 */
-#define EXTI_PD_PD14                 BIT(14)                  /*!< interrupt pending status from line 14 */
-#define EXTI_PD_PD15                 BIT(15)                  /*!< interrupt pending status from line 15 */
-#define EXTI_PD_PD16                 BIT(16)                  /*!< interrupt pending status from line 16 */
-#define EXTI_PD_PD17                 BIT(17)                  /*!< interrupt pending status from line 17 */
-#define EXTI_PD_PD19                 BIT(19)                  /*!< interrupt pending status from line 19 */
-#define EXTI_PD_PD21                 BIT(21)                  /*!< interrupt pending status from line 21 */
+#define EXTI_PD_PD0                  BIT(0)                   /*!< interrupt/event pending status from line 0 */
+#define EXTI_PD_PD1                  BIT(1)                   /*!< interrupt/event pending status from line 1 */
+#define EXTI_PD_PD2                  BIT(2)                   /*!< interrupt/event pending status from line 2 */
+#define EXTI_PD_PD3                  BIT(3)                   /*!< interrupt/event pending status from line 3 */
+#define EXTI_PD_PD4                  BIT(4)                   /*!< interrupt/event pending status from line 4 */
+#define EXTI_PD_PD5                  BIT(5)                   /*!< interrupt/event pending status from line 5 */
+#define EXTI_PD_PD6                  BIT(6)                   /*!< interrupt/event pending status from line 6 */
+#define EXTI_PD_PD7                  BIT(7)                   /*!< interrupt/event pending status from line 7 */
+#define EXTI_PD_PD8                  BIT(8)                   /*!< interrupt/event pending status from line 8 */
+#define EXTI_PD_PD9                  BIT(9)                   /*!< interrupt/event pending status from line 9 */
+#define EXTI_PD_PD10                 BIT(10)                  /*!< interrupt/event pending status from line 10 */
+#define EXTI_PD_PD11                 BIT(11)                  /*!< interrupt/event pending status from line 11 */
+#define EXTI_PD_PD12                 BIT(12)                  /*!< interrupt/event pending status from line 12 */
+#define EXTI_PD_PD13                 BIT(13)                  /*!< interrupt/event pending status from line 13 */
+#define EXTI_PD_PD14                 BIT(14)                  /*!< interrupt/event pending status from line 14 */
+#define EXTI_PD_PD15                 BIT(15)                  /*!< interrupt/event pending status from line 15 */
+#define EXTI_PD_PD16                 BIT(16)                  /*!< interrupt/event pending status from line 16 */
+#define EXTI_PD_PD17                 BIT(17)                  /*!< interrupt/event pending status from line 17 */
+#define EXTI_PD_PD19                 BIT(19)                  /*!< interrupt/event pending status from line 19 */
+#define EXTI_PD_PD21                 BIT(21)                  /*!< interrupt/event pending status from line 21 */
 
 /* constants definitions */
 /* EXTI line number */
-typedef enum { 
+typedef enum
+{ 
     EXTI_0      = BIT(0),                                     /*!< EXTI line 0 */
     EXTI_1      = BIT(1),                                     /*!< EXTI line 1 */
     EXTI_2      = BIT(2),                                     /*!< EXTI line 2 */
@@ -227,54 +230,49 @@ typedef enum {
     EXTI_24     = BIT(24),                                    /*!< EXTI line 24 */
     EXTI_25     = BIT(25),                                    /*!< EXTI line 25 */
     EXTI_26     = BIT(26),                                    /*!< EXTI line 26 */
-    EXTI_27     = BIT(27)                                    /*!< EXTI line 27 */
-} exti_line_enum;
+    EXTI_27     = BIT(27),                                    /*!< EXTI line 27 */
+}exti_line_enum;
 
 /* external interrupt and event */
-typedef enum {
+typedef enum
+{
     EXTI_INTERRUPT   = 0,                                     /*!< EXTI interrupt mode */
     EXTI_EVENT                                                /*!< EXTI event mode */
-} exti_mode_enum;
+}exti_mode_enum;
 
-/* interrupt and event trigger mode */
-typedef enum {
+/* interrupt trigger mode */
+typedef enum
+{ 
     EXTI_TRIG_RISING = 0,                                     /*!< EXTI rising edge trigger */
     EXTI_TRIG_FALLING,                                        /*!< EXTI falling edge trigger */
-    EXTI_TRIG_BOTH,                                           /*!< EXTI rising and falling edge trigger */
-    EXTI_TRIG_NONE                                            /*!< without rising edge or falling edge trigger */
-} exti_trig_type_enum;
+    EXTI_TRIG_BOTH                                            /*!< EXTI rising and falling edge trigger */
+}exti_trig_type_enum;
 
 /* function declarations */
-/* initialization, EXTI lines configuration functions */
-
 /* deinitialize the EXTI */
 void exti_deinit(void);
-/* initialize the EXTI line x */
+/* enable the configuration of EXTI initialize */
 void exti_init(exti_line_enum linex, exti_mode_enum mode, exti_trig_type_enum trig_type);
-
-
 /* enable the interrupts from EXTI line x */
 void exti_interrupt_enable(exti_line_enum linex);
-/* disable the interrupts from EXTI line x */
-void exti_interrupt_disable(exti_line_enum linex);
 /* enable the events from EXTI line x */
 void exti_event_enable(exti_line_enum linex);
+/* disable the interrupts from EXTI line x */
+void exti_interrupt_disable(exti_line_enum linex);
 /* disable the events from EXTI line x */
 void exti_event_disable(exti_line_enum linex);
 
-
-/* enable the software interrupt event from EXTI line x */
-void exti_software_interrupt_enable(exti_line_enum linex);
-/* disable the software interrupt event from EXTI line x */
-void exti_software_interrupt_disable(exti_line_enum linex);
-/* interrupt & flag functions */
-/* get EXTI line x interrupt pending flag */
+/* get EXTI lines pending flag */
 FlagStatus exti_flag_get(exti_line_enum linex);
-/* clear EXTI line x interrupt pending flag */
+/* clear EXTI lines pending flag */
 void exti_flag_clear(exti_line_enum linex);
-/* get EXTI line x interrupt pending flag */
+/* get EXTI lines flag when the interrupt flag is set */
 FlagStatus exti_interrupt_flag_get(exti_line_enum linex);
-/* clear EXTI line x interrupt pending flag */
+/* clear EXTI lines pending flag */
 void exti_interrupt_flag_clear(exti_line_enum linex);
+/* EXTI software interrupt event enable */
+void exti_software_interrupt_enable(exti_line_enum linex);
+/* EXTI software interrupt event disable */
+void exti_software_interrupt_disable(exti_line_enum linex);
 
 #endif /* GD32E23X_EXTI_H */

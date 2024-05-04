@@ -2,11 +2,13 @@
     \file  gd32e23x_misc.h
     \brief definitions for the MISC
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -39,19 +41,19 @@ OF SUCH DAMAGE.
 
 /* constants definitions */
 /* set the RAM and FLASH base address */
-#define NVIC_VECTTAB_RAM            ((uint32_t)0x20000000U)                      /*!< RAM base address */
-#define NVIC_VECTTAB_FLASH          ((uint32_t)0x08000000U)                      /*!< Flash base address */
+#define NVIC_VECTTAB_RAM            ((uint32_t)0x20000000)                      /*!< RAM base address */
+#define NVIC_VECTTAB_FLASH          ((uint32_t)0x08000000)                      /*!< Flash base address */
 
 /* set the NVIC vector table offset mask */
-#define NVIC_VECTTAB_OFFSET_MASK    ((uint32_t)0x1FFFFF80U)                      /*!< NVIC vector table offset mask */
+#define NVIC_VECTTAB_OFFSET_MASK    ((uint32_t)0x1FFFFF80)                      /*!< NVIC vector table offset mask */
 
 /* the register key mask, if you want to do the write operation, you should write 0x5FA to VECTKEY bits */
-#define NVIC_AIRCR_VECTKEY_MASK     ((uint32_t)0x05FA0000U)                      /*!< NVIC VECTKEY mask */
+#define NVIC_AIRCR_VECTKEY_MASK     ((uint32_t)0x05FA0000)                      /*!< NVIC VECTKEY mask */
 
 /* choose the method to enter or exit the lowpower mode */
-#define SCB_SCR_SLEEPONEXIT         ((uint8_t)0x02U)                             /*!< choose the the system whether enter low power mode by exiting from ISR */
-#define SCB_SCR_SLEEPDEEP           ((uint8_t)0x04U)                             /*!< choose the the system enter the DEEPSLEEP mode or SLEEP mode */
-#define SCB_SCR_SEVONPEND           ((uint8_t)0x10U)                             /*!< choose the interrupt source that can wake up the lowpower mode */
+#define SCB_SCR_SLEEPONEXIT         ((uint8_t)0x02)                             /*!< choose the the system whether enter low power mode by exiting from ISR */
+#define SCB_SCR_SLEEPDEEP           ((uint8_t)0x04)                             /*!< choose the the system enter the DEEPSLEEP mode or SLEEP mode */
+#define SCB_SCR_SEVONPEND           ((uint8_t)0x10)                             /*!< choose the interrupt source that can wake up the lowpower mode */
 
 #define SCB_LPM_SLEEP_EXIT_ISR      SCB_SCR_SLEEPONEXIT                         /*!< low power mode by exiting from ISR */
 #define SCB_LPM_DEEPSLEEP           SCB_SCR_SLEEPDEEP                           /*!< DEEPSLEEP mode or SLEEP mode */

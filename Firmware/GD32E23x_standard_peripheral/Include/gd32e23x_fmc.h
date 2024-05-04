@@ -1,12 +1,14 @@
 /*!
-    \file    gd32e23x_fmc.h
-    \brief   definitions for the FMC
+    \file  gd32e23x_fmc.h
+    \brief definitions for the FMC
 
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -99,7 +101,7 @@ OF SUCH DAMAGE.
 #define FMC_OBSTAT_DATA         BITS(16,31)                 /*!< option byte data bits */
 
 /* FMC_WP */
-#define FMC_WP_WP               BITS(0,31)                  /*!< store WP[15:0] of option byte block after system reset */
+#define FMC_WP_WP               BITS(0,15)                  /*!< store WP[15:0] of option byte block after system reset */
 
 /* FMC_PID */
 #define FMC_PID_PID             BITS(0,31)                  /*!< product ID bits */
@@ -169,8 +171,8 @@ typedef enum
 
 /* option byte security protection level in FMC_OBSTAT register */
 #define OB_OBSTAT_PLEVEL_NO        ((uint8_t)0x00U)         /*!< no security protection */
-#define OB_OBSTAT_PLEVEL_LOW       ((uint8_t)0x02U)         /*!< low security protection */
-#define OB_OBSTAT_PLEVEL_HIGH      ((uint8_t)0x06U)         /*!< high security protection */
+#define OB_OBSTAT_PLEVEL_LOW       ((uint8_t)0x01U)         /*!< low security protection */
+#define OB_OBSTAT_PLEVEL_HIGH      ((uint8_t)0x03U)         /*!< high security protection */
 
 /* option byte user mask */
 #define OB_USER_MASK               ((uint8_t)0x88U)         /*!< OB_USER reserved bit mask */
@@ -233,7 +235,7 @@ uint32_t option_byte_value_get(uint32_t addr);
 /* erase option byte */
 fmc_state_enum ob_erase(void);
 /* enable option byte write protection (OB_WP) */
-fmc_state_enum ob_write_protection_enable(uint32_t ob_wp);
+fmc_state_enum ob_write_protection_enable(uint16_t ob_wp);
 /* configure read out protect */
 fmc_state_enum ob_security_protection_config(uint16_t ob_spc);
 /* write the FMC option byte user */
@@ -245,7 +247,7 @@ uint8_t ob_user_get(void);
 /* get the FMC option byte OB_DATA */
 uint16_t ob_data_get(void);
 /* get the FMC option byte write protection */
-uint32_t ob_write_protection_get(void);
+uint16_t ob_write_protection_get(void);
 /* get the value of FMC option byte security protection level (PLEVEL) in FMC_OBSTAT register */
 uint32_t ob_obstat_plevel_get(void);
 

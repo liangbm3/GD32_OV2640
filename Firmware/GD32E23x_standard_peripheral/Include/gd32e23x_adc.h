@@ -2,11 +2,13 @@
     \file  gd32e23x_adc.h
     \brief definitions for the ADC
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -183,10 +185,10 @@ OF SUCH DAMAGE.
 #define ADC_SAMPLETIME_71POINT5          SAMPTX_SPT(6)                               /*!< 71.5 sampling cycles */
 #define ADC_SAMPLETIME_239POINT5         SAMPTX_SPT(7)                               /*!< 239.5 sampling cycles */
 
-/* ADC data offset for inserted channel x */
+/* ADC data offset for inserted channel x*/
 #define IOFFX_IOFF(regval)               (BITS(0,11) & ((uint32_t)(regval) << 0))    
 
-/* ADC analog watchdog high threshold */
+/* ADC analog watchdog high threshold  */
 #define WDHT_WDHT(regval)                (BITS(0,11) & ((uint32_t)(regval) << 0))    
 
 /* ADC analog watchdog low  threshold */
@@ -199,7 +201,7 @@ OF SUCH DAMAGE.
 #define ISQ_IL(regval)                   (BITS(20,21) & ((uint32_t)(regval) << 20))  
 
 /* ADC resolution definitions */
-#define CTL0_DRES(regval)                (BITS(24,25) & ((uint32_t)(regval) << 24))  /*!< ADC resolution */
+#define CTL0_DRES(regval)                (BITS(24,25) & ((regval) << 24))            /*!< ADC resolution */
 #define ADC_RESOLUTION_12B               CTL0_DRES(0)                                /*!< 12-bit ADC resolution */
 #define ADC_RESOLUTION_10B               CTL0_DRES(1)                                /*!< 10-bit ADC resolution */
 #define ADC_RESOLUTION_8B                CTL0_DRES(2)                                /*!< 8-bit ADC resolution */

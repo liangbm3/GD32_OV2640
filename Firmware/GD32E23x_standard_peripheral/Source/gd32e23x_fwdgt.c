@@ -1,12 +1,27 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_fwdgt.c
     \brief   FWDGT driver
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
 
     All rights reserved.
 
@@ -36,8 +51,15 @@ OF SUCH DAMAGE.
 
 #include "gd32e23x_fwdgt.h"
 
+/* write value to FWDGT_CTL_CMD bit field */
+#define CTL_CMD(regval)             (BITS(0,15) & ((uint32_t)(regval) << 0U))  /*!< write value to FWDGT_CTL_CMD bit field */
+/* write value to FWDGT_RLD_RLD bit field */
+#define RLD_RLD(regval)             (BITS(0,11) & ((uint32_t)(regval) << 0U))  /*!< write value to FWDGT_RLD_RLD bit field */
+/* write value to FWDGT_WND_WND bit field */
+#define WND_WND(regval)             (BITS(0,11) & ((uint32_t)(regval) << 0U))  /*!< write value to FWDGT_WND_WND bit field */
+
 /*!
-    \brief      enable write access to FWDGT_PSC and FWDGT_RLD and FWDGT_WND
+    \brief      enable write access to FWDGT_PSC and FWDGT_RLD
     \param[in]  none
     \param[out] none
     \retval     none

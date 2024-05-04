@@ -1,38 +1,38 @@
 ;/*!
-;    \file    startup_gd32e23x.s
+;    \file    startup_gd32e230.s
 ;    \brief   start up file
 ;
-;    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+;    \version 2018-06-19, V1.0.0, firmware for GD32E230
 ;*/
-
-;/*  Copyright (c) 2012 ARM LIMITED
-;    Copyright (c) 2024, GigaDevice Semiconductor Inc.
 ;
-;   All rights reserved.
-;   Redistribution and use in source and binary forms, with or without
-;   modification, are permitted provided that the following conditions are met:
-;   - Redistributions of source code must retain the above copyright
-;     notice, this list of conditions and the following disclaimer.
-;   - Redistributions in binary form must reproduce the above copyright
-;     notice, this list of conditions and the following disclaimer in the
-;     documentation and/or other materials provided with the distribution.
-;   - Neither the name of ARM nor the names of its contributors may be used
-;     to endorse or promote products derived from this software without
-;     specific prior written permission.
-;   *
-;   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-;   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-;   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-;   ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS AND CONTRIBUTORS BE
-;   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-;   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-;   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-;   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-;   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-;   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-;   POSSIBILITY OF SUCH DAMAGE.
+;/*
+;    Copyright (c) 2018, GigaDevice Semiconductor Inc.
+;
+;    All rights reserved.
+;
+;    Redistribution and use in source and binary forms, with or without modification, 
+;are permitted provided that the following conditions are met:
+;
+;    1. Redistributions of source code must retain the above copyright notice, this 
+;       list of conditions and the following disclaimer.
+;    2. Redistributions in binary form must reproduce the above copyright notice, 
+;       this list of conditions and the following disclaimer in the documentation 
+;       and/or other materials provided with the distribution.
+;    3. Neither the name of the copyright holder nor the names of its contributors 
+;       may be used to endorse or promote products derived from this software without 
+;       specific prior written permission.
+;
+;    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+;AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+;WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+;IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+;INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+;NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+;PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+;WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+;ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+;OF SUCH DAMAGE.
 ;*/
-;/* This file refers the CMSIS standard, some adjustments are made according to GigaDevice chips */
 
         MODULE  ?cstartup
 
@@ -52,15 +52,15 @@ __vector_table
 
         DCD     NMI_Handler                         ; Vector Number 2,NMI Handler
         DCD     HardFault_Handler                   ; Vector Number 3,Hard Fault Handler
-        DCD     0                                   ; Reserved
-        DCD     0                                   ; Reserved
-        DCD     0                                   ; Reserved
+        DCD     MemManage_Handler                   ; Vector Number 4,MPU Fault Handler
+        DCD     BusFault_Handler                    ; Vector Number 5,Bus Fault Handler
+        DCD     UsageFault_Handler                  ; Vector Number 6,Usage Fault Handler
         DCD     0                                   ; Reserved
         DCD     0                                   ; Reserved
         DCD     0                                   ; Reserved
         DCD     0                                   ; Reserved
         DCD     SVC_Handler                         ; Vector Number 11,SVCall Handler
-        DCD     0                                   ; Reserved
+        DCD     DebugMon_Handler                    ; Vector Number 12,Debug Monitor Handler
         DCD     0                                   ; Reserved
         DCD     PendSV_Handler                      ; Vector Number 14,PendSV Handler
         DCD     SysTick_Handler                     ; Vector Number 15,SysTick Handler
@@ -125,11 +125,31 @@ NMI_Handler
         SECTION .text:CODE:NOROOT:REORDER(1)
 HardFault_Handler
         B HardFault_Handler
+       
+        PUBWEAK MemManage_Handler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+MemManage_Handler
+        B MemManage_Handler
+
+        PUBWEAK BusFault_Handler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+BusFault_Handler
+        B BusFault_Handler
+
+        PUBWEAK UsageFault_Handler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+UsageFault_Handler
+        B UsageFault_Handler
         
         PUBWEAK SVC_Handler
         SECTION .text:CODE:NOROOT:REORDER(1)
 SVC_Handler
         B SVC_Handler
+       
+        PUBWEAK DebugMon_Handler
+        SECTION .text:CODE:NOROOT:REORDER(1)
+DebugMon_Handler
+        B DebugMon_Handler
         
         PUBWEAK PendSV_Handler
         SECTION .text:CODE:NOROOT:REORDER(1)

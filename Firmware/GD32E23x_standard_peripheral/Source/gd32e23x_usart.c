@@ -1,12 +1,29 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_usart.c
     \brief   USART driver
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -405,6 +422,45 @@ uint16_t usart_data_receive(uint32_t usart_periph)
 }
 
 /*!
+    \brief      enable auto baud rate detection
+    \param[in]  usart_periph: USARTx(x=0)
+    \param[out] none
+    \retval     none
+*/
+void usart_autobaud_detection_enable(uint32_t usart_periph)
+{
+    USART_CTL1(usart_periph) |= USART_CTL1_ABDEN;
+}
+
+/*!
+    \brief      disable auto baud rate detection
+    \param[in]  usart_periph: USARTx(x=0)
+    \param[out] none
+    \retval     none
+*/
+void usart_autobaud_detection_disable(uint32_t usart_periph)
+{
+    USART_CTL1(usart_periph) &= ~(USART_CTL1_ABDEN);
+}
+
+/*!
+    \brief      configure auto baud rate detection mode
+    \param[in]  usart_periph: USARTx(x=0)
+    \param[in]  abdmod: auto baud rate detection mode
+                only one parameter can be selected which is shown as below:
+      \arg        USART_ABDM_FTOR: falling edge to rising edge measurement
+      \arg        USART_ABDM_FTOF: falling edge to falling edge measurement
+    \param[out] none
+    \retval     none
+*/
+void usart_autobaud_detection_mode_config(uint32_t usart_periph, uint32_t abdmod)
+{
+    /* reset ABDM bits */
+    USART_CTL1(usart_periph) &= ~(USART_CTL1_ABDM);
+    USART_CTL1(usart_periph) |= abdmod;
+}
+
+/*!
     \brief      address of the USART terminal
     \param[in]  usart_periph: USARTx(x=0,1)
     \param[in]  addr: 0x00-0xFF, address of USART terminal
@@ -556,7 +612,7 @@ void usart_halfduplex_disable(uint32_t usart_periph)
 
 /*!
     \brief      enable clock
-    \param[in]  usart_periph: USARTx(x=0,1)
+    \param[in]  usart_periph: USARTx(x=0)
     \param[out] none
     \retval     none
 */
@@ -570,7 +626,7 @@ void usart_clock_enable(uint32_t usart_periph)
 
 /*!
     \brief      disable clock
-    \param[in]  usart_periph: USARTx(x=0,1)
+    \param[in]  usart_periph: USARTx(x=0)
     \param[out] none
     \retval     none
 */
@@ -1083,6 +1139,8 @@ uint8_t usart_receive_fifo_counter_number(uint32_t usart_periph)
       \arg        USART_FLAG_CTS: CTS level
       \arg        USART_FLAG_RT: receiver timeout flag
       \arg        USART_FLAG_EB: end of block flag
+      \arg        USART_FLAG_ABDE: auto baudrate detection error
+      \arg        USART_FLAG_ABD: auto baudrate detection flag
       \arg        USART_FLAG_BSY: busy flag
       \arg        USART_FLAG_AM: address match flag
       \arg        USART_FLAG_SB: send break flag
@@ -1154,9 +1212,9 @@ void usart_flag_clear(uint32_t usart_periph, usart_flag_enum flag)
     \param[out] none
     \retval     none
 */
-void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum interrupt)
+void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum inttype)
 {
-    USART_REG_VAL(usart_periph, interrupt) |= BIT(USART_BIT_POS(interrupt));
+    USART_REG_VAL(usart_periph, inttype) |= BIT(USART_BIT_POS(inttype));
 }
 
 /*!
@@ -1181,9 +1239,9 @@ void usart_interrupt_enable(uint32_t usart_periph, usart_interrupt_enum interrup
     \param[out] none
     \retval     none
 */
-void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum interrupt)
+void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum inttype)
 {
-    USART_REG_VAL(usart_periph, interrupt) &= ~BIT(USART_BIT_POS(interrupt));
+    USART_REG_VAL(usart_periph, inttype) &= ~BIT(USART_BIT_POS(inttype));
 }
 
 /*!
@@ -1191,6 +1249,7 @@ void usart_interrupt_disable(uint32_t usart_periph, usart_interrupt_enum interru
     \param[in]  usart_periph: USARTx(x=0,1)
     \param[in]  cmdtype: command type
                 only one parameter can be selected which is shown as below:
+      \arg        USART_CMD_ABDCMD: auto baudrate detection command
       \arg        USART_CMD_SBKCMD: send break command
       \arg        USART_CMD_MMCMD: mute mode command
       \arg        USART_CMD_RXFCMD: receive data flush command

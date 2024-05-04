@@ -1,12 +1,29 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_crc.c
     \brief   CRC driver
-    
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -134,7 +151,6 @@ void crc_init_data_register_write(uint32_t init_data)
 /*!
     \brief      configure the CRC input data function
     \param[in]  data_reverse: specify input data reverse function
-                only one parameter can be selected which is shown as below:
       \arg        CRC_INPUT_DATA_NOT: input data is not reversed
       \arg        CRC_INPUT_DATA_BYTE: input data is reversed on 8 bits
       \arg        CRC_INPUT_DATA_HALFWORD: input data is reversed on 16 bits
@@ -151,7 +167,6 @@ void crc_input_data_reverse_config(uint32_t data_reverse)
 /*!
     \brief      configure the CRC size of polynomial function
     \param[in]  poly_size: size of polynomial
-                only one parameter can be selected which is shown as below:
       \arg        CRC_CTL_PS_32: 32-bit polynomial for CRC calculation
       \arg        CRC_CTL_PS_16: 16-bit polynomial for CRC calculation
       \arg        CRC_CTL_PS_8: 8-bit polynomial for CRC calculation
@@ -178,64 +193,29 @@ void crc_polynomial_set(uint32_t poly)
 }
 
 /*!
-    \brief      CRC calculate single data
-    \param[in]  sdata: specify input data
-    \param[in]  data_format: input data format
-                only one parameter can be selected which is shown as below:
-      \arg        INPUT_FORMAT_WORD: input data in word format
-      \arg        INPUT_FORMAT_HALFWORD: input data in half-word format
-      \arg        INPUT_FORMAT_BYTE: input data in byte format
+    \brief      CRC calculate a 32-bit data
+    \param[in]  sdata: specify 32-bit data
     \param[out] none
-    \retval     CRC calculate value
+    \retval     32-bit CRC calculate value
 */
-uint32_t crc_single_data_calculate(uint32_t sdata, uint8_t data_format)
+uint32_t crc_single_data_calculate(uint32_t sdata)
 {
-    if(INPUT_FORMAT_WORD == data_format){
-        REG32(CRC) = sdata;
-    }else if(INPUT_FORMAT_HALFWORD == data_format){
-        REG16(CRC) = (uint16_t)sdata;
-    }else{
-        REG8(CRC) = (uint8_t)sdata;
-    }
-
+    CRC_DATA = sdata;
     return(CRC_DATA);
 }
 
 /*!
-    \brief      CRC calculate a data array
-    \param[in]  array: pointer to the input data array
+    \brief      CRC calculate a 32-bit data array
+    \param[in]  array: pointer to an array of 32 bit data words
     \param[in]  size: size of the array
-    \param[in]  data_format: input data format
-                only one parameter can be selected which is shown as below:
-      \arg        INPUT_FORMAT_WORD: input data in word format
-      \arg        INPUT_FORMAT_HALFWORD: input data in half-word format
-      \arg        INPUT_FORMAT_BYTE: input data in byte format
     \param[out] none
-    \retval     CRC calculate value
+    \retval     32-bit CRC calculate value
 */
-uint32_t crc_block_data_calculate(void *array, uint32_t size, uint8_t data_format)
-{
-    uint8_t *data8;
-    uint16_t *data16;
-    uint32_t *data32;
+uint32_t crc_block_data_calculate(uint32_t array[], uint32_t size)
+{  
     uint32_t index;
-
-    if(INPUT_FORMAT_WORD == data_format){
-        data32 = (uint32_t *)array;
-        for(index = 0U; index < size; index++){
-            REG32(CRC) = data32[index];
-        }
-    }else if(INPUT_FORMAT_HALFWORD == data_format){
-        data16 = (uint16_t *)array;
-        for(index = 0U; index < size; index++){
-            REG16(CRC) = data16[index];
-        }
-    }else{
-        data8 = (uint8_t *)array;
-        for(index = 0U; index < size; index++){
-            REG8(CRC) =  data8[index];
-        }
+    for(index = 0U; index < size; index++){
+        CRC_DATA = array[index];
     }
-
     return (CRC_DATA);
 }

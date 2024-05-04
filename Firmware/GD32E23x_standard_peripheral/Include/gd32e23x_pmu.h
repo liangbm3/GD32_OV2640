@@ -1,12 +1,14 @@
 /*!
-    \file    gd32e23x_pmu.h
-    \brief   definitions for the PMU
+    \file  gd32e23x_pmu.h
+    \brief definitions for the PMU
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -62,15 +64,13 @@ OF SUCH DAMAGE.
 #define PMU_CS_STBF                   BIT(1)                   /*!< standby flag */
 #define PMU_CS_LVDF                   BIT(2)                   /*!< low voltage detector status flag */
 #define PMU_CS_WUPEN0                 BIT(8)                   /*!< wakeup pin enable */
+#ifdef GD32E230
 #define PMU_CS_WUPEN1                 BIT(9)                   /*!< wakeup pin enable */
+#endif /* GD32E230 */
 #define PMU_CS_WUPEN5                 BIT(13)                  /*!< wakeup pin enable */
 #define PMU_CS_WUPEN6                 BIT(14)                  /*!< wakeup pin enable */
 
 /* constants definitions */
-/* PMU ldo definitions */
-#define PMU_LDO_NORMAL                ((uint32_t)0x00000000U)  /*!< LDO operates normally when PMU enter deepsleep mode */
-#define PMU_LDO_LOWPOWER              PMU_CTL_LDOLP            /*!< LDO work at low power status when PMU enter deepsleep mode */
-
 /* PMU low voltage detector threshold definitions */
 #define CTL_LVDT(regval)              (BITS(5,7)&((uint32_t)(regval)<<5))
 #define PMU_LVDT_0                    CTL_LVDT(0)              /*!< voltage threshold is 2.1V */
@@ -87,16 +87,22 @@ OF SUCH DAMAGE.
 #define PMU_LDOVS_HIGH                CTL_LDOVS(1)             /*!< LDO output voltage high mode */
 #define PMU_LDOVS_LOW                 CTL_LDOVS(2)             /*!< LDO output voltage low mode */
 
-/* PMU WKUP pin definitions */
-#define PMU_WAKEUP_PIN0               PMU_CS_WUPEN0            /*!< WKUP Pin 0 (PA0) enable */
-#define PMU_WAKEUP_PIN1               PMU_CS_WUPEN1            /*!< WKUP Pin 1 (PC13) enable */
-#define PMU_WAKEUP_PIN5               PMU_CS_WUPEN5            /*!< WKUP Pin 5 (PB5) enable */
-#define PMU_WAKEUP_PIN6               PMU_CS_WUPEN6            /*!< WKUP Pin 6 (PB15) enable */
+/* PMU ldo definitions */
+#define PMU_LDO_NORMAL                ((uint32_t)0x00000000U)  /*!< LDO operates normally when PMU enter deepsleep mode */
+#define PMU_LDO_LOWPOWER              PMU_CTL_LDOLP            /*!< LDO work at low power status when PMU enter deepsleep mode */
 
 /* PMU flag definitions */
 #define PMU_FLAG_WAKEUP               PMU_CS_WUF               /*!< wakeup flag status */
 #define PMU_FLAG_STANDBY              PMU_CS_STBF              /*!< standby flag status */
 #define PMU_FLAG_LVD                  PMU_CS_LVDF              /*!< LVD flag status */
+
+/* PMU WKUP pin definitions */
+#define PMU_WAKEUP_PIN0               PMU_CS_WUPEN0            /*!< WKUP Pin 0 (PA0) enable */
+#ifdef GD32E230
+#define PMU_WAKEUP_PIN1               PMU_CS_WUPEN1            /*!< WKUP Pin 1 (PC13) enable */
+#endif /* GD32E230 */
+#define PMU_WAKEUP_PIN5               PMU_CS_WUPEN5            /*!< WKUP Pin 5 (PB5) enable */
+#define PMU_WAKEUP_PIN6               PMU_CS_WUPEN6            /*!< WKUP Pin 6 (PB15) enable */
 
 /* PMU flag reset definitions */
 #define PMU_FLAG_RESET_WAKEUP         PMU_CTL_WURST            /*!< wakeup flag reset */
@@ -123,7 +129,7 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd);
 /* PMU work in deepsleep mode */
 void pmu_to_deepsleepmode(uint32_t ldo, uint8_t deepsleepmodecmd);
 /* PMU work in standby mode */
-void pmu_to_standbymode(void);
+void pmu_to_standbymode(uint8_t standbymodecmd);
 /* enable PMU wakeup pin */
 void pmu_wakeup_pin_enable(uint32_t wakeup_pin);
 /* disable PMU wakeup pin */
@@ -136,9 +142,9 @@ void pmu_backup_write_enable(void);
 void pmu_backup_write_disable(void);
 
 /* flag functions */
+/* clear flag bit */
+void pmu_flag_clear(uint32_t flag_clear);
 /* get flag state */
 FlagStatus pmu_flag_get(uint32_t flag);
-/* clear flag bit */
-void pmu_flag_clear(uint32_t flag);
 
 #endif /* GD32E23X_PMU_H */

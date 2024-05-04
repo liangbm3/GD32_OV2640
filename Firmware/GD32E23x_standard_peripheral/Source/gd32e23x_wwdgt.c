@@ -1,12 +1,27 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_wwdgt.c
     \brief   WWDGT driver
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
 
     All rights reserved.
 
@@ -35,6 +50,12 @@ OF SUCH DAMAGE.
 */
 
 #include "gd32e23x_wwdgt.h"
+#include "gd32e23x_rcu.h"
+
+/* WWDGT_CTL register value */
+#define CTL_CNT(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0U))    /*!< write value to WWDGT_CTL_CNT bit field */
+/* WWDGT_CFG register value */
+#define CFG_WIN(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0U))    /*!< write value to WWDGT_CFG_WIN bit field */
 
 /*!
     \brief      reset the window watchdog timer configuration
@@ -67,7 +88,12 @@ void wwdgt_enable(void)
 */
 void wwdgt_counter_update(uint16_t counter_value)
 {
-    WWDGT_CTL = (uint32_t)(CTL_CNT(counter_value));
+    uint32_t reg = 0x00000000U;
+    
+    reg = WWDGT_CTL &(~(uint32_t)WWDGT_CTL_CNT);
+    reg |= (uint32_t)(CTL_CNT(counter_value));
+    
+    WWDGT_CTL = (uint32_t)reg;
 }
 
 /*!
@@ -85,8 +111,30 @@ void wwdgt_counter_update(uint16_t counter_value)
 */
 void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler)
 {
-    WWDGT_CFG = (uint32_t)(CFG_WIN(window) | prescaler);
-    WWDGT_CTL = (uint32_t)(CTL_CNT(counter));
+    uint32_t reg_cfg = 0x00000000U, reg_ctl = 0x00000000U;
+
+    /* clear WIN and PSC bits, clear CNT bit */
+    reg_cfg = WWDGT_CFG &(~((uint32_t)WWDGT_CFG_WIN|(uint32_t)WWDGT_CFG_PSC));
+    reg_ctl = WWDGT_CTL &(~(uint32_t)WWDGT_CTL_CNT);
+  
+    /* configure WIN and PSC bits, configure CNT bit */
+    reg_cfg |= (uint32_t)(CFG_WIN(window));
+    reg_cfg |= (uint32_t)(prescaler);
+    reg_ctl |= (uint32_t)(CTL_CNT(counter));
+    
+    WWDGT_CFG = (uint32_t)reg_cfg;
+    WWDGT_CTL = (uint32_t)reg_ctl;
+}
+
+/*!
+    \brief      enable early wakeup interrupt of WWDGT
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void wwdgt_interrupt_enable(void)
+{
+    WWDGT_CFG |= WWDGT_CFG_EWIE;
 }
 
 /*!
@@ -111,16 +159,5 @@ FlagStatus wwdgt_flag_get(void)
 */
 void wwdgt_flag_clear(void)
 {
-    WWDGT_STAT &= (~(uint32_t)WWDGT_STAT_EWIF);
-}
-
-/*!
-    \brief      enable early wakeup interrupt of WWDGT
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void wwdgt_interrupt_enable(void)
-{
-    WWDGT_CFG |= WWDGT_CFG_EWIE;
+    WWDGT_STAT &= (uint32_t)(~(uint32_t)WWDGT_STAT_EWIF);
 }

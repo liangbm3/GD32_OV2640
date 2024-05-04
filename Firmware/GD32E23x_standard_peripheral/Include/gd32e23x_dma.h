@@ -1,12 +1,14 @@
 /*!
-    \file    gd32e23x_dma.h
-    \brief   definitions for the DMA
+    \file  gd32e23x_dma.h
+    \brief definitions for the DMA
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -167,35 +169,35 @@ typedef struct
 #define DMA_INT_ERR                       DMA_CHXCTL_ERRIE                                /*!< enable bit for channel error interrupt */
 
 /* transfer direction */
-#define DMA_PERIPHERAL_TO_MEMORY          ((uint8_t)0x00U)                                /*!< read from peripheral and write to memory */
-#define DMA_MEMORY_TO_PERIPHERAL          ((uint8_t)0x01U)                                /*!< read from memory and write to peripheral */
+#define DMA_PERIPHERAL_TO_MEMORY          ((uint32_t)0x00000000U)                         /*!< read from peripheral and write to memory */
+#define DMA_MEMORY_TO_PERIPHERAL          ((uint32_t)0x00000001U)                         /*!< read from memory and write to peripheral */
 
 /* peripheral increasing mode */
-#define DMA_PERIPH_INCREASE_DISABLE       ((uint8_t)0x00U)                                /*!< next address of peripheral is fixed address mode */
-#define DMA_PERIPH_INCREASE_ENABLE        ((uint8_t)0x01U)                                /*!< next address of peripheral is increasing address mode */
+#define DMA_PERIPH_INCREASE_DISABLE       ((uint32_t)0x00000000U)                         /*!< next address of peripheral is fixed address mode */
+#define DMA_PERIPH_INCREASE_ENABLE        ((uint32_t)0x00000001U)                         /*!< next address of peripheral is increasing address mode */
 
 /* memory increasing mode */
-#define DMA_MEMORY_INCREASE_DISABLE       ((uint8_t)0x00U)                                /*!< next address of memory is fixed address mode */
-#define DMA_MEMORY_INCREASE_ENABLE        ((uint8_t)0x01U)                                /*!< next address of memory is increasing address mode */
+#define DMA_MEMORY_INCREASE_DISABLE       ((uint32_t)0x00000000U)                         /*!< next address of memory is fixed address mode */
+#define DMA_MEMORY_INCREASE_ENABLE        ((uint32_t)0x00000001U)                         /*!< next address of memory is increasing address mode */
 
 /* transfer data size of peripheral */
 #define CHCTL_PWIDTH(regval)              (BITS(8,9) & ((regval) << 8))                   /*!< transfer data size of peripheral */
-#define DMA_PERIPHERAL_WIDTH_8BIT         CHCTL_PWIDTH(0U)                                /*!< transfer data size of peripheral is 8-bit */
-#define DMA_PERIPHERAL_WIDTH_16BIT        CHCTL_PWIDTH(1U)                                /*!< transfer data size of peripheral is 16-bit */
-#define DMA_PERIPHERAL_WIDTH_32BIT        CHCTL_PWIDTH(2U)                                /*!< transfer data size of peripheral is 32-bit */
+#define DMA_PERIPHERAL_WIDTH_8BIT         CHCTL_PWIDTH(0U)                                 /*!< transfer data size of peripheral is 8-bit */
+#define DMA_PERIPHERAL_WIDTH_16BIT        CHCTL_PWIDTH(1U)                                 /*!< transfer data size of peripheral is 16-bit */
+#define DMA_PERIPHERAL_WIDTH_32BIT        CHCTL_PWIDTH(2U)                                 /*!< transfer data size of peripheral is 32-bit */
 
 /* transfer data size of memory */
 #define CHCTL_MWIDTH(regval)              (BITS(10,11) & ((regval) << 10))                /*!< transfer data size of memory */
-#define DMA_MEMORY_WIDTH_8BIT             CHCTL_MWIDTH(0U)                                /*!< transfer data size of memory is 8-bit */
-#define DMA_MEMORY_WIDTH_16BIT            CHCTL_MWIDTH(1U)                                /*!< transfer data size of memory is 16-bit */
-#define DMA_MEMORY_WIDTH_32BIT            CHCTL_MWIDTH(2U)                                /*!< transfer data size of memory is 32-bit */
+#define DMA_MEMORY_WIDTH_8BIT             CHCTL_MWIDTH(0U)                                 /*!< transfer data size of memory is 8-bit */
+#define DMA_MEMORY_WIDTH_16BIT            CHCTL_MWIDTH(1U)                                 /*!< transfer data size of memory is 16-bit */
+#define DMA_MEMORY_WIDTH_32BIT            CHCTL_MWIDTH(2U)                                 /*!< transfer data size of memory is 32-bit */
 
 /* channel priority level */
 #define CHCTL_PRIO(regval)                (BITS(12,13) & ((regval) << 12))                /*!< DMA channel priority level */
-#define DMA_PRIORITY_LOW                  CHCTL_PRIO(0U)                                  /*!< low priority */
-#define DMA_PRIORITY_MEDIUM               CHCTL_PRIO(1U)                                  /*!< medium priority */
-#define DMA_PRIORITY_HIGH                 CHCTL_PRIO(2U)                                  /*!< high priority */
-#define DMA_PRIORITY_ULTRA_HIGH           CHCTL_PRIO(3U)                                  /*!< ultra high priority */
+#define DMA_PRIORITY_LOW                  CHCTL_PRIO(0U)                                   /*!< low priority */
+#define DMA_PRIORITY_MEDIUM               CHCTL_PRIO(1U)                                   /*!< medium priority */
+#define DMA_PRIORITY_HIGH                 CHCTL_PRIO(2U)                                   /*!< high priority */
+#define DMA_PRIORITY_ULTRA_HIGH           CHCTL_PRIO(3U)                                   /*!< ultra high priority */
 
 /* DMA_CHxCNT register */
 /* transfer counter */
@@ -244,7 +246,7 @@ void dma_periph_increase_enable(dma_channel_enum channelx);
 /* disable next address increasement algorithm of peripheral */
 void dma_periph_increase_disable(dma_channel_enum channelx);
 /* configure the direction of data transfer on the channel */
-void dma_transfer_direction_config(dma_channel_enum channelx, uint8_t direction);
+void dma_transfer_direction_config(dma_channel_enum channelx, uint32_t direction);
 
 /* check DMA flag is set or not */
 FlagStatus dma_flag_get(dma_channel_enum channelx, uint32_t flag);

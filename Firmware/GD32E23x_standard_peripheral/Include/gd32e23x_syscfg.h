@@ -2,11 +2,13 @@
     \file  GD32e23x_syscfg.h
     \brief definitions for the SYSCFG
 
-    \version 2023-09-04, V2.0.1, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -57,7 +59,9 @@ OF SUCH DAMAGE.
 #define SYSCFG_CFG0_USART0_RX_DMA_RMP       BIT(10)                             /*!< USART0 Rx DMA remap config */
 #define SYSCFG_CFG0_TIMER15_DMA_RMP         BIT(11)                             /*!< TIMER 15 DMA remap config */
 #define SYSCFG_CFG0_TIMER16_DMA_RMP         BIT(12)                             /*!< TIMER 16 DMA remap config */
+#if defined(GD32E230)
 #define SYSCFG_CFG0_PB9_HCCE                BIT(19)                             /*!< PB9 pin high current capability enable */
+#endif
 
 /* SYSCFG_EXTISS0 bits definitions */
 #define SYSCFG_EXTISS0_EXTI0_SS             BITS(0,3)                           /*!< EXTI 0 configuration */
@@ -101,9 +105,11 @@ OF SUCH DAMAGE.
 #define SYSCFG_DMA_REMAP_TIMER15            SYSCFG_CFG0_TIMER15_DMA_RMP         /*!< TIMER15 DMA remap */
 #define SYSCFG_DMA_REMAP_TIMER16            SYSCFG_CFG0_TIMER16_DMA_RMP         /*!< TIMER16 DMA remap */
 
+#if defined(GD32E230)
 /* high current definitions */
 #define SYSCFG_HIGH_CURRENT_ENABLE          SYSCFG_CFG0_PB9_HCCE                /*!< high current enable */
 #define SYSCFG_HIGH_CURRENT_DISABLE         (~SYSCFG_CFG0_PB9_HCCE)             /*!< high current disable */
+#endif
 
 /* EXTI source select definition */
 #define EXTISS0                             ((uint8_t)0x00U)                    /*!< EXTI source select register 0 */
@@ -164,10 +170,12 @@ void syscfg_dma_remap_enable(uint32_t syscfg_dma_remap);
 /* disable the DMA channels remapping */
 void syscfg_dma_remap_disable(uint32_t syscfg_dma_remap);
 
+#if defined(GD32E230)
 /* enable PB9 high current capability */
 void syscfg_high_current_enable(void);
 /* disable PB9 high current capability */
 void syscfg_high_current_disable(void);
+#endif
 
 /* configure the GPIO pin as EXTI Line */
 void syscfg_exti_line_config(uint8_t exti_port, uint8_t exti_pin);

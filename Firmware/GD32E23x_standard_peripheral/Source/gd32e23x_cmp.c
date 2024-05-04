@@ -1,72 +1,84 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
-    \file    gd32f23x_cmp.c
+    \file    gd32e23x_cmp.c
     \brief   CMP driver
 
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2022, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
 
-    Redistribution and use in source and binary forms, with or without modification,
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice, this
+    1. Redistributions of source code must retain the above copyright notice, this 
        list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
+    2. Redistributions in binary form must reproduce the above copyright notice, 
+       this list of conditions and the following disclaimer in the documentation 
        and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
+    3. Neither the name of the copyright holder nor the names of its contributors 
+       may be used to endorse or promote products derived from this software without 
        specific prior written permission.
 
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 OF SUCH DAMAGE.
 */
 
 #include "gd32e23x_cmp.h"
 
 /*!
-    \brief      CMP deinit
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
+    \brief      deinitialize comparator 
+    \param[in]  none
     \param[out] none
     \retval     none
 */
-void cmp_deinit(cmp_enum cmp_periph)
+void cmp_deinit(void)
 {
-    if(CMP0 == cmp_periph){
-        CMP_CS &= ((uint32_t)0xFFFF0000U);
-    }else{
-    }
+    CMP_CS = ((uint32_t)0x00000000U);
 }
 
 /*!
-    \brief      CMP mode init
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
+    \brief      initialize comparator mode 
     \param[in]  operating_mode
-      \arg        CMP_MODE_HIGHSPEED: high speed mode
-      \arg        CMP_MODE_MIDDLESPEED: medium speed mode
-      \arg        CMP_MODE_LOWSPEED: low speed mode
-      \arg        CMP_MODE_VERYLOWSPEED: very-low speed mode
-    \param[in]  inverting_input
-      \arg        CMP_INVERTING_INPUT_1_4VREFINT: VREFINT *1/4 input
-      \arg        CMP_INVERTING_INPUT_1_2VREFINT: VREFINT *1/2 input
-      \arg        CMP_INVERTING_INPUT_3_4VREFINT: VREFINT *3/4 input
-      \arg        CMP_INVERTING_INPUT_VREFINT: VREFINT input
-      \arg        CMP_INVERTING_INPUT_PA4: PA4 input
-      \arg        CMP_INVERTING_INPUT_PA5: PA5 input
-      \arg        CMP_INVERTING_INPUT_PA0_PA2: PA0 for CMP0 or PA2 for CMP1 as inverting input
-    \param[in]  output_hysteresis
+      \arg        CMP_HIGHSPEED: high speed mode
+      \arg        CMP_MIDDLESPEED: medium speed mode
+      \arg        CMP_LOWSPEED: low speed mode
+      \arg        CMP_VERYLOWSPEED: very-low speed mode
+    \param[in]  inverting_input 
+      \arg        CMP_1_4VREFINT: VREFINT *1/4 input
+      \arg        CMP_1_2VREFINT: VREFINT *1/2 input
+      \arg        CMP_3_4VREFINT: VREFINT *3/4 input
+      \arg        CMP_VREFINT: VREFINT input
+      \arg        CMP_PA4: PA4 input
+      \arg        CMP_PA5: PA5 input
+      \arg        CMP_PA0: PA0 input
+      \arg        CMP_PA2: PA2 input
+    \param[in]  hysteresis
       \arg        CMP_HYSTERESIS_NO: output no hysteresis
       \arg        CMP_HYSTERESIS_LOW: output low hysteresis
       \arg        CMP_HYSTERESIS_MIDDLE: output middle hysteresis
@@ -74,138 +86,110 @@ void cmp_deinit(cmp_enum cmp_periph)
     \param[out] none
     \retval     none
 */
-void cmp_mode_init(cmp_enum cmp_periph, uint32_t operating_mode, uint32_t inverting_input, uint32_t output_hysteresis)
+void cmp_mode_init(operating_mode_enum operating_mode, inverting_input_enum inverting_input, cmp_hysteresis_enum output_hysteresis)
 {
-    uint32_t temp = 0U;
-
-    if(CMP0 == cmp_periph){
-        /* initialize comparator 0 mode */
-        temp = CMP_CS;
-        temp &= ~(uint32_t)(CMP_CS_CMP0M | CMP_CS_CMP0MSEL | CMP_CS_CMP0HST);
-        temp |= (uint32_t)(operating_mode | inverting_input | output_hysteresis);
-        CMP_CS = temp;
-    }else{
-    }
+    /* initialize comparator mode */
+    CMP_CS |= CS_CMPM(operating_mode) | CS_CMPMSEL(inverting_input) | CS_CMPHST(output_hysteresis);
+  
 }
 
 /*!
-    \brief      CMP output init
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
-    \param[in]  output_selection
-      \arg        CMP_OUTPUT_NONE: CMP output none
-      \arg        CMP_OUTPUT_TIMER0_BKIN: CMP output TIMER0 break input
-      \arg        CMP_OUTPUT_TIMER0_IC0: CMP output TIMER0_CH0 input capture
-      \arg        CMP_OUTPUT_TIMER0_OCPRECLR: CMP output TIMER0 OCPRE_CLR input
-      \arg        CMP_OUTPUT_TIMER2_IC0: CMP output TIMER2_CH0 input capture
-      \arg        CMP_OUTPUT_TIMER2_OCPRECLR: CMP output TIMER2 OCPRE_CLR input
-    \param[in]  output_polarity
+    \brief      initialize comparator output
+    \param[in]  output_slection 
+      \arg        CMP_OUTPUT_NONE: output no selection
+      \arg        CMP_OUTPUT_TIMER0BKIN: TIMER 0 break input
+      \arg        CMP_OUTPUT_TIMER0IC0: TIMER 0 channel0 input capture 
+      \arg        CMP_OUTPUT_TIMER0OCPRECLR: TIMER 0 OCPRE_CLR input
+      \arg        CMP_OUTPUT_TIMER2IC0: TIMER 2 channel0 input capture
+      \arg        CMP_OUTPUT_TIMER2OCPRECLR: TIMER 2 OCPRE_CLR input
+    \param[in]  output_polarity 
       \arg        CMP_OUTPUT_POLARITY_INVERTED: output is inverted
-      \arg        CMP_OUTPUT_POLARITY_NONINVERTED: output is not inverted
+      \arg        CMP_OUTPUT_POLARITY_NOINVERTED: output is not inverted
     \param[out] none
     \retval     none
 */
-void cmp_output_init(cmp_enum cmp_periph, uint32_t output_selection, uint32_t output_polarity)
+void cmp_output_init(cmp_output_enum output_slection, uint32_t output_polarity)
 {
-    uint32_t temp = 0U;
+    /* initialize comparator output */
 
-    if(CMP0 == cmp_periph){
-        /* initialize comparator 0 output */
-        temp = CMP_CS;
-        temp &= ~(uint32_t)CMP_CS_CMP0OSEL;
-        temp |= (uint32_t)output_selection;
-        /* output polarity */
-        if(CMP_OUTPUT_POLARITY_INVERTED == output_polarity){
-            temp |= (uint32_t)CMP_CS_CMP0PL;
-        }else{
-            temp &= ~(uint32_t)CMP_CS_CMP0PL;
-        }
-        CMP_CS = temp;
-    }else{
+    CMP_CS |= CS_CMPOSEL(output_slection);
+    /* output polarity */
+    if(CMP_OUTPUT_POLARITY_INVERTED == output_polarity){
+         CMP_CS |= CMP_CS_CMPPL;
+    }else{ 
+         CMP_CS &= ~CMP_CS_CMPPL;
     }
+
 }
 
 /*!
-    \brief      enable CMP
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
+    \brief      enable comparator 
+    \param[in]  none
     \param[out] none
     \retval     none
 */
-void cmp_enable(cmp_enum cmp_periph)
+void cmp_enable(void)
 {
-    if(CMP0 == cmp_periph){
-        CMP_CS |= (uint32_t)CMP_CS_CMP0EN;
-    }else{
-    }
+    CMP_CS |= CMP_CS_CMPEN;
 }
 
 /*!
-    \brief      disable CMP
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
+    \brief      disable comparator 
+    \param[in]  none
     \param[out] none
     \retval     none
 */
-void cmp_disable(cmp_enum cmp_periph)
+void cmp_disable(void)
 {
-    if(CMP0 == cmp_periph){
-        CMP_CS &= ~(uint32_t)CMP_CS_CMP0EN;
-    }else{
-    }
+    CMP_CS &= ~CMP_CS_CMPEN;
 }
 
 /*!
-    \brief      enable CMP switch
+    \brief      enable comparator switch
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void cmp_switch_enable(void)
 {
-    CMP_CS |= (uint32_t)CMP_CS_CMP0SW;
+    CMP_CS |= CMP_CS_CMPSW;
 }
 
 /*!
-    \brief      disable CMP switch
+    \brief      disable comparator switch
     \param[in]  none
     \param[out] none
     \retval     none
 */
 void cmp_switch_disable(void)
 {
-    CMP_CS &= ~(uint32_t)CMP_CS_CMP0SW;
-}
-
-/*!
-    \brief      lock the CMP
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
-    \param[out] none
-    \retval     none
-*/
-void cmp_lock_enable(cmp_enum cmp_periph)
-{
-    if(CMP0 == cmp_periph){
-        /* lock CMP0 */
-        CMP_CS |= (uint32_t)CMP_CS_CMP0LK;
-    }else{
-    }
+    CMP_CS &= ~CMP_CS_CMPSW;
 }
 
 /*!
     \brief      get output level
-    \param[in]  cmp_periph
-      \arg        CMP0: comparator 0
+    \param[in]  none
     \param[out] none
     \retval     the output level
 */
-uint32_t cmp_output_level_get(cmp_enum cmp_periph)
+uint32_t cmp_output_level_get(void)
 {
-    /* get output level of CMP0 */
-    if((uint32_t)RESET != (CMP_CS & CMP_CS_CMP0O)) {
+    if(CMP_CS & CMP_CS_CMPO){
         return CMP_OUTPUTLEVEL_HIGH;
     }else{
         return CMP_OUTPUTLEVEL_LOW;
     }
+    
 }
+
+/*!
+    \brief      lock the comparator
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void cmp_lock_enable(void)
+{
+    CMP_CS |= CMP_CS_CMPLK;
+}
+

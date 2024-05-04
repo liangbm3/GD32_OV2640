@@ -1,12 +1,29 @@
+ /******************************************************************************
+   * 测试硬件：立创开发板·GD32E230C8T6    使用主频72Mhz    晶振8Mhz
+   * 版 本 号: V1.0
+   * 修改作者: www.lckfb.com
+   * 修改日期: 2023年11月02日
+   * 功能介绍:      
+   *****************************************************************************
+   * 梁山派软硬件资料与相关扩展板软硬件资料官网全部开源  
+   * 开发板官网：www.lckfb.com   
+   * 技术支持常驻论坛，任何技术问题欢迎随时交流学习  
+   * 立创论坛：club.szlcsc.com   
+   * 其余模块移植手册：【立创·GD32E230C8T6开发板】模块移植手册
+   * 关注bilibili账号：【立创开发板】，掌握我们的最新动态！
+   * 不靠卖板赚钱，以培养中国工程师为己任
+  ******************************************************************************/
 /*!
     \file    gd32e23x_fmc.c
     \brief   FMC driver
 
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -370,8 +387,8 @@ fmc_state_enum ob_erase(void)
             }
         }else{
             if(FMC_TOERR != fmc_state){
-                /* reset the OBER bit */
-                FMC_CTL &= ~FMC_CTL_OBER;
+                /* reset the OBPG bit */
+                FMC_CTL &= ~FMC_CTL_OBPG;
             }
         }  
     }
@@ -393,13 +410,13 @@ fmc_state_enum ob_erase(void)
       \arg        FMC_TOERR: timeout error
       \arg        FMC_OB_HSPC: option byte security protection code high
 */
-fmc_state_enum ob_write_protection_enable(uint32_t ob_wp)
+fmc_state_enum ob_write_protection_enable(uint16_t ob_wp)
 {
     uint32_t ob_wrp_val = 0U;
 
     fmc_state_enum fmc_state = fmc_ready_wait(FMC_TIMEOUT_COUNT);
     
-    ob_wp = ~ob_wp;
+    ob_wp = (uint16_t)(~ob_wp);
     ob_wrp_val |= (uint32_t)ob_wp&0x00FFU;
     ob_wrp_val |= (((uint32_t)ob_wp&0xFF00U)>>8U) << 16U;
     
@@ -413,16 +430,6 @@ fmc_state_enum ob_write_protection_enable(uint32_t ob_wp)
             /* wait for the FMC ready */
             fmc_state = fmc_ready_wait(FMC_TIMEOUT_COUNT);
         }
-        
-        ob_wrp_val |= (uint32_t)(ob_wp>>16)&0x00FFU;
-        ob_wrp_val |= (((uint32_t)(ob_wp>>16)&0xFF00U)>>8U) << 16U;
-        if(0xFFFFFFFFU != ob_wrp_val){
-            REG32((OB) + 0x0CU) = ob_wrp_val;
-    
-            /* wait for the FMC ready */
-            fmc_state = fmc_ready_wait(FMC_TIMEOUT_COUNT);
-        }
-        
         if(FMC_TOERR != fmc_state){
             /* reset the OBPG bit */
             FMC_CTL &= ~FMC_CTL_OBPG;
@@ -634,9 +641,9 @@ uint16_t ob_data_get(void)
     \param[out] none
     \retval     OB_WP
 */
-uint32_t ob_write_protection_get(void)
+uint16_t ob_write_protection_get(void)
 {
-    return (uint32_t)(FMC_WP);
+    return (uint16_t)(FMC_WP);
 }
 
 /*!
@@ -644,9 +651,6 @@ uint32_t ob_write_protection_get(void)
     \param[in]  none
     \param[out] none
     \retval     the value of PLEVEL
-      \arg        OB_OBSTAT_PLEVEL_NO: no security protection
-      \arg        OB_OBSTAT_PLEVEL_LOW: low security protection
-      \arg        OB_OBSTAT_PLEVEL_HIGH: high security protection
 */
 uint32_t ob_obstat_plevel_get(void)
 {

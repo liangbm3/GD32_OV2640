@@ -5,7 +5,6 @@
 */
 
 /* Copyright (c) 2012 ARM LIMITED
-   Copyright (c) 2023, GigaDevice Semiconductor Inc.
 
    All rights reserved.
    Redistribution and use in source and binary forms, with or without

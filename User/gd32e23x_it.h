@@ -2,11 +2,13 @@
     \file    gd32e23x_it.h
     \brief   the header file of the ISR
     
-    \version 2024-02-22, V2.1.0, firmware for GD32E23x
+    \version 2019-02-19, V1.0.0, firmware for GD32E23x
 */
 
 /*
-    Copyright (c) 2024, GigaDevice Semiconductor Inc.
+    Copyright (c) 2019, GigaDevice Semiconductor Inc.
+
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
@@ -42,8 +44,16 @@ OF SUCH DAMAGE.
 void NMI_Handler(void);
 /* this function handles HardFault exception */
 void HardFault_Handler(void);
+/* this function handles MemManage exception */
+void MemManage_Handler(void);
+/* this function handles BusFault exception */
+void BusFault_Handler(void);
+/* this function handles UsageFault exception */
+void UsageFault_Handler(void);
 /* this function handles SVC exception */
 void SVC_Handler(void);
+/* this function handles DebugMon exception */
+void DebugMon_Handler(void);
 /* this function handles PendSV exception */
 void PendSV_Handler(void);
 /* this function handles SysTick exception */
