@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>GD32E230</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Firmware\GD32E23x_standard_peripheral\Include;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\User;..\Hardware;..\Hardware\usart;..\Hardware\dma</IncludePath>
+              <IncludePath>..\Firmware\GD32E23x_standard_peripheral\Include;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\User;..\Hardware;..\Hardware\usart;..\Hardware\dma;..\Firmware\CMSIS\Core\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -413,6 +413,26 @@
               <FileName>bsp_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Hardware\dma\bsp_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>ov2640.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\OV2640\ov2640.c</FilePath>
+            </File>
+            <File>
+              <FileName>sccb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\OV2640\sccb.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\lcd\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Hardware\lcd\lcd_init.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -544,23 +564,13 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
       </Groups>
     </Target>
   </Targets>
 
   <RTE>
     <apis/>
-    <components>
-      <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.0.2" condition="ARMv6_7_8-M Device">
-        <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.2.0"/>
-        <targetInfos>
-          <targetInfo name="GD32E230C_START"/>
-        </targetInfos>
-      </component>
-    </components>
+    <components/>
     <files/>
   </RTE>
 

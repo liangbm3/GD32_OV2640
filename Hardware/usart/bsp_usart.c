@@ -1,150 +1,150 @@
  /******************************************************************************
-   * ²âÊÔÓ²¼ş£ºÁ¢´´¿ª·¢°å¡¤GD32E230C8T6    Ê¹ÓÃÖ÷Æµ72Mhz    ¾§Õñ8Mhz
-   * °æ ±¾ ºÅ: V1.0
-   * ĞŞ¸Ä×÷Õß: www.lckfb.com
-   * ĞŞ¸ÄÈÕÆÚ: 2023Äê11ÔÂ02ÈÕ
-   * ¹¦ÄÜ½éÉÜ:      
+   * æµ‹è¯•ç¡¬ä»¶ï¼šç«‹åˆ›å¼€å‘æ¿Â·GD32E230C8T6    ä½¿ç”¨ä¸»é¢‘72Mhz    æ™¶æŒ¯8Mhz
+   * ç‰ˆ æœ¬ å·: V1.0
+   * ä¿®æ”¹ä½œè€…: www.lckfb.com
+   * ä¿®æ”¹æ—¥æœŸ: 2023å¹´11æœˆ02æ—¥
+   * åŠŸèƒ½ä»‹ç»:      
    *****************************************************************************
-   * ÁºÉ½ÅÉÈíÓ²¼ş×ÊÁÏÓëÏà¹ØÀ©Õ¹°åÈíÓ²¼ş×ÊÁÏ¹ÙÍøÈ«²¿¿ªÔ´  
-   * ¿ª·¢°å¹ÙÍø£ºwww.lckfb.com   
-   * ¼¼ÊõÖ§³Ö³£×¤ÂÛÌ³£¬ÈÎºÎ¼¼ÊõÎÊÌâ»¶Ó­ËæÊ±½»Á÷Ñ§Ï°  
-   * Á¢´´ÂÛÌ³£ºclub.szlcsc.com   
-   * ÆäÓàÄ£¿éÒÆÖ²ÊÖ²á£º¡¾Á¢´´¡¤GD32E230C8T6¿ª·¢°å¡¿Ä£¿éÒÆÖ²ÊÖ²á
-   * ¹Ø×¢bilibiliÕËºÅ£º¡¾Á¢´´¿ª·¢°å¡¿£¬ÕÆÎÕÎÒÃÇµÄ×îĞÂ¶¯Ì¬£¡
-   * ²»¿¿Âô°å×¬Ç®£¬ÒÔÅàÑøÖĞ¹ú¹¤³ÌÊ¦Îª¼ºÈÎ
+   * æ¢å±±æ´¾è½¯ç¡¬ä»¶èµ„æ–™ä¸ç›¸å…³æ‰©å±•æ¿è½¯ç¡¬ä»¶èµ„æ–™å®˜ç½‘å…¨éƒ¨å¼€æº  
+   * å¼€å‘æ¿å®˜ç½‘ï¼šwww.lckfb.com   
+   * æŠ€æœ¯æ”¯æŒå¸¸é©»è®ºå›ï¼Œä»»ä½•æŠ€æœ¯é—®é¢˜æ¬¢è¿éšæ—¶äº¤æµå­¦ä¹   
+   * ç«‹åˆ›è®ºå›ï¼šclub.szlcsc.com   
+   * å…¶ä½™æ¨¡å—ç§»æ¤æ‰‹å†Œï¼šã€ç«‹åˆ›Â·GD32E230C8T6å¼€å‘æ¿ã€‘æ¨¡å—ç§»æ¤æ‰‹å†Œ
+   * å…³æ³¨bilibiliè´¦å·ï¼šã€ç«‹åˆ›å¼€å‘æ¿ã€‘ï¼ŒæŒæ¡æˆ‘ä»¬çš„æœ€æ–°åŠ¨æ€ï¼
+   * ä¸é å–æ¿èµšé’±ï¼Œä»¥åŸ¹å…»ä¸­å›½å·¥ç¨‹å¸ˆä¸ºå·±ä»»
   ******************************************************************************/
 #include "bsp_usart.h"
 #include "stdio.h"
 #include "bsp_dma.h"
 
-uint8_t 	g_recv_buff[USART_RECEIVE_LENGTH];   // ½ÓÊÕ»º³åÇø
-uint16_t 	g_recv_length = 0;									 // ½ÓÊÕÊı¾İ³¤¶È
-uint8_t		g_recv_complete_flag = 0; 					 // ½ÓÊÕÊı¾İÍê³É±êÖ¾Î»
+uint8_t 	g_recv_buff[USART_RECEIVE_LENGTH];   // æ¥æ”¶ç¼“å†²åŒº
+uint16_t 	g_recv_length = 0;									 // æ¥æ”¶æ•°æ®é•¿åº¦
+uint8_t		g_recv_complete_flag = 0; 					 // æ¥æ”¶æ•°æ®å®Œæˆæ ‡å¿—ä½
 
 /************************************************
-º¯ÊıÃû³Æ £º usart_gpio_config
-¹¦    ÄÜ £º ´®¿ÚÅäÖÃGPIO
-²Î    Êı £º band_rate:²¨ÌØÂÊ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š usart_gpio_config
+åŠŸ    èƒ½ ï¼š ä¸²å£é…ç½®GPIO
+å‚    æ•° ï¼š band_rate:æ³¢ç‰¹ç‡
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void usart_gpio_config(uint32_t band_rate)
 {
-	/* ¿ªÆôÊ±ÖÓ */
-	rcu_periph_clock_enable(BSP_USART_TX_RCU);   // ¿ªÆô´®¿ÚÊ±ÖÓ
-	rcu_periph_clock_enable(BSP_USART_RX_RCU);   // ¿ªÆô¶Ë¿ÚÊ±ÖÓ
-	rcu_periph_clock_enable(BSP_USART_RCU);      // ¿ªÆô¶Ë¿ÚÊ±ÖÓ
+	/* å¼€å¯æ—¶é’Ÿ */
+	rcu_periph_clock_enable(BSP_USART_TX_RCU);   // å¼€å¯ä¸²å£æ—¶é’Ÿ
+	rcu_periph_clock_enable(BSP_USART_RX_RCU);   // å¼€å¯ç«¯å£æ—¶é’Ÿ
+	rcu_periph_clock_enable(BSP_USART_RCU);      // å¼€å¯ç«¯å£æ—¶é’Ÿ
 	
-	/* ÅäÖÃGPIO¸´ÓÃ¹¦ÄÜ */
+	/* é…ç½®GPIOå¤ç”¨åŠŸèƒ½ */
   gpio_af_set(BSP_USART_TX_PORT,BSP_USART_AF,BSP_USART_TX_PIN);	
 	gpio_af_set(BSP_USART_RX_PORT,BSP_USART_AF,BSP_USART_RX_PIN);	
 	
-	/* ÅäÖÃGPIOµÄÄ£Ê½ */
-	/* ÅäÖÃTXÎª¸´ÓÃÄ£Ê½ ÉÏÀ­Ä£Ê½ */
+	/* é…ç½®GPIOçš„æ¨¡å¼ */
+	/* é…ç½®TXä¸ºå¤ç”¨æ¨¡å¼ ä¸Šæ‹‰æ¨¡å¼ */
 	gpio_mode_set(BSP_USART_TX_PORT,GPIO_MODE_AF,GPIO_PUPD_PULLUP,BSP_USART_TX_PIN);
-	/* ÅäÖÃRXÎª¸´ÓÃÄ£Ê½ ÉÏÀ­Ä£Ê½ */
+	/* é…ç½®RXä¸ºå¤ç”¨æ¨¡å¼ ä¸Šæ‹‰æ¨¡å¼ */
 	gpio_mode_set(BSP_USART_RX_PORT, GPIO_MODE_AF,GPIO_PUPD_PULLUP,BSP_USART_RX_PIN);
 	
-	/* ÅäÖÃTXÎªÍÆÍìÊä³ö 50MHZ */
+	/* é…ç½®TXä¸ºæ¨æŒ½è¾“å‡º 50MHZ */
 	gpio_output_options_set(BSP_USART_TX_PORT,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,BSP_USART_TX_PIN);
-	/* ÅäÖÃRXÎªÍÆÍìÊä³ö 50MHZ */
+	/* é…ç½®RXä¸ºæ¨æŒ½è¾“å‡º 50MHZ */
 	gpio_output_options_set(BSP_USART_RX_PORT,GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, BSP_USART_RX_PIN);
 
-	/* ÅäÖÃ´®¿ÚµÄ²ÎÊı */
-	usart_deinit(BSP_USART);                                 // ¸´Î»´®¿Ú
-	usart_baudrate_set(BSP_USART,band_rate);                 // ÉèÖÃ²¨ÌØÂÊ
-	usart_parity_config(BSP_USART,USART_PM_NONE);            // Ã»ÓĞĞ£ÑéÎ»
-	usart_word_length_set(BSP_USART,USART_WL_8BIT);          // 8Î»Êı¾İÎ»
-	usart_stop_bit_set(BSP_USART,USART_STB_1BIT);     			 // 1Î»Í£Ö¹Î»
+	/* é…ç½®ä¸²å£çš„å‚æ•° */
+	usart_deinit(BSP_USART);                                 // å¤ä½ä¸²å£
+	usart_baudrate_set(BSP_USART,band_rate);                 // è®¾ç½®æ³¢ç‰¹ç‡
+	usart_parity_config(BSP_USART,USART_PM_NONE);            // æ²¡æœ‰æ ¡éªŒä½
+	usart_word_length_set(BSP_USART,USART_WL_8BIT);          // 8ä½æ•°æ®ä½
+	usart_stop_bit_set(BSP_USART,USART_STB_1BIT);     			 // 1ä½åœæ­¢ä½
 
-  /* Ê¹ÄÜ´®¿Ú */
-	usart_enable(BSP_USART);                                 // Ê¹ÄÜ´®¿Ú
-	usart_transmit_config(BSP_USART,USART_TRANSMIT_ENABLE);  // Ê¹ÄÜ´®¿Ú·¢ËÍ
-	usart_receive_config(BSP_USART,USART_RECEIVE_ENABLE);    // Ê¹ÄÜ´®¿Ú½ÓÊÕ
+  /* ä½¿èƒ½ä¸²å£ */
+	usart_enable(BSP_USART);                                 // ä½¿èƒ½ä¸²å£
+	usart_transmit_config(BSP_USART,USART_TRANSMIT_ENABLE);  // ä½¿èƒ½ä¸²å£å‘é€
+	usart_receive_config(BSP_USART,USART_RECEIVE_ENABLE);    // ä½¿èƒ½ä¸²å£æ¥æ”¶
 	
-    /* ÖĞ¶ÏÅäÖÃ */
-    nvic_irq_enable(BSP_USART_IRQ, 2);              // ÅäÖÃÖĞ¶ÏÓÅÏÈ¼¶
-#if !USB_USART_DMA                                     // Ê¹ÓÃÖĞ¶Ï
-    usart_interrupt_enable(BSP_USART, USART_INT_RBNE); // ¶ÁÊı¾İ»º³åÇø·Ç¿ÕÖĞ¶ÏºÍÒç³ö´íÎóÖĞ¶Ï
+    /* ä¸­æ–­é…ç½® */
+    nvic_irq_enable(BSP_USART_IRQ, 2);              // é…ç½®ä¸­æ–­ä¼˜å…ˆçº§
+#if !USB_USART_DMA                                     // ä½¿ç”¨ä¸­æ–­
+    usart_interrupt_enable(BSP_USART, USART_INT_RBNE); // è¯»æ•°æ®ç¼“å†²åŒºéç©ºä¸­æ–­å’Œæº¢å‡ºé”™è¯¯ä¸­æ–­
 #endif
-    usart_interrupt_enable(BSP_USART, USART_INT_IDLE); // ¿ÕÏĞ¼ì²âÖĞ¶Ï
+    usart_interrupt_enable(BSP_USART, USART_INT_IDLE); // ç©ºé—²æ£€æµ‹ä¸­æ–­
 }
 
 
 /************************************************
-º¯ÊıÃû³Æ £º usart_send_data
-¹¦    ÄÜ £º ´®¿ÚÖØ·¢ËÍÒ»¸ö×Ö½Ú
-²Î    Êı £º ucch£ºÒª·¢ËÍµÄ×Ö½Ú
-·µ »Ø Öµ £º 
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š usart_send_data
+åŠŸ    èƒ½ ï¼š ä¸²å£é‡å‘é€ä¸€ä¸ªå­—èŠ‚
+å‚    æ•° ï¼š ucchï¼šè¦å‘é€çš„å­—èŠ‚
+è¿” å› å€¼ ï¼š 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void usart_send_data(uint8_t ucch)
 {
-	usart_data_transmit(BSP_USART,(uint8_t)ucch);							 // ·¢ËÍÊı¾İ
-	while(RESET == usart_flag_get(BSP_USART,USART_FLAG_TBE));  // µÈ´ı·¢ËÍÊı¾İ»º³åÇø±êÖ¾ÖÃÎ»
+	usart_data_transmit(BSP_USART,(uint8_t)ucch);							 // å‘é€æ•°æ®
+	while(RESET == usart_flag_get(BSP_USART,USART_FLAG_TBE));  // ç­‰å¾…å‘é€æ•°æ®ç¼“å†²åŒºæ ‡å¿—ç½®ä½
 }
 
 
 /************************************************
-º¯ÊıÃû³Æ £º usart_send_String
-¹¦    ÄÜ £º ´®¿Ú·¢ËÍ×Ö·û´®
-²Î    Êı £º ucstr:Òª·¢ËÍµÄ×Ö·û´®
-·µ »Ø Öµ £º 
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š usart_send_String
+åŠŸ    èƒ½ ï¼š ä¸²å£å‘é€å­—ç¬¦ä¸²
+å‚    æ•° ï¼š ucstr:è¦å‘é€çš„å­—ç¬¦ä¸²
+è¿” å› å€¼ ï¼š 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void usart_send_string(uint8_t *ucstr)
 {
-	while(ucstr && *ucstr)        // µØÖ·Îª¿Õ»òÕßÖµÎª¿ÕÌø³ö
+	while(ucstr && *ucstr)        // åœ°å€ä¸ºç©ºæˆ–è€…å€¼ä¸ºç©ºè·³å‡º
 	{
-	  usart_send_data(*ucstr++);  // ·¢ËÍµ¥¸ö×Ö·û
+	  usart_send_data(*ucstr++);  // å‘é€å•ä¸ªå­—ç¬¦
 	}
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º fputc
-¹¦    ÄÜ £º ´®¿ÚÖØ¶¨Ïòº¯Êı
-²Î    Êı £º 
-·µ »Ø Öµ £º 
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š fputc
+åŠŸ    èƒ½ ï¼š ä¸²å£é‡å®šå‘å‡½æ•°
+å‚    æ•° ï¼š 
+è¿” å› å€¼ ï¼š 
+ä½œ    è€… ï¼š LC
 *************************************************/
 int fputc(int ch, FILE *f)
 {
      usart_send_data(ch);
-     // µÈ´ı·¢ËÍÊı¾İ»º³åÇø±êÖ¾ÖÃÎ»
+     // ç­‰å¾…å‘é€æ•°æ®ç¼“å†²åŒºæ ‡å¿—ç½®ä½
      return ch;
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º BSP_USART_IRQHandler
-¹¦    ÄÜ £º ´®¿Ú½ÓÊÕÖĞ¶Ï·şÎñº¯Êı
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š BSP_USART_IRQHandler
+åŠŸ    èƒ½ ï¼š ä¸²å£æ¥æ”¶ä¸­æ–­æœåŠ¡å‡½æ•°
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void BSP_USART_IRQHandler(void)
 {
-#if !USB_USART_DMA                                                       // Ê¹ÓÃÖĞ¶Ï
-    if (usart_interrupt_flag_get(BSP_USART, USART_INT_FLAG_RBNE) == SET) // ½ÓÊÕ»º³åÇø²»Îª¿Õ
+#if !USB_USART_DMA                                                       // ä½¿ç”¨ä¸­æ–­
+    if (usart_interrupt_flag_get(BSP_USART, USART_INT_FLAG_RBNE) == SET) // æ¥æ”¶ç¼“å†²åŒºä¸ä¸ºç©º
     {
-        g_recv_buff[g_recv_length++] = usart_data_receive(BSP_USART); // °Ñ½ÓÊÕµ½µÄÊı¾İ·Åµ½»º³åÇøÖĞ
+        g_recv_buff[g_recv_length++] = usart_data_receive(BSP_USART); // æŠŠæ¥æ”¶åˆ°çš„æ•°æ®æ”¾åˆ°ç¼“å†²åŒºä¸­
     }
 #endif
 
-    if (usart_interrupt_flag_get(BSP_USART, USART_INT_FLAG_IDLE) == SET) // ¼ì²âµ½Ö¡ÖĞ¶Ï
+    if (usart_interrupt_flag_get(BSP_USART, USART_INT_FLAG_IDLE) == SET) // æ£€æµ‹åˆ°å¸§ä¸­æ–­
     {
 		usart_interrupt_flag_clear(USART0, USART_INT_FLAG_IDLE);
-        usart_data_receive(BSP_USART); // ±ØĞëÒª¶Á£¬¶Á³öÀ´µÄÖµ²»ÄÜÒª
+        usart_data_receive(BSP_USART); // å¿…é¡»è¦è¯»ï¼Œè¯»å‡ºæ¥çš„å€¼ä¸èƒ½è¦
 
-#if USB_USART_DMA // Ê¹ÓÃDMA
-        /* ´¦ÀíDMA½ÓÊÕµ½µÄÊı¾İ */
-        g_recv_length = USART_RECEIVE_LENGTH - dma_transfer_number_get(BSP_DMA_CH); // ¼ÆËãÊµ¼Ê½ÓÊÕµÄÊı¾İ³¤¶È
-        /* ÖØĞÂÉèÖÃDMA´«Êä */
-        dma_channel_disable(BSP_DMA_CH); // Ê§ÄÜDMAÍ¨µÀ
-        dma_config();                             // ÖØĞÂÅäÖÃDMA½øĞĞ´«Êä
+#if USB_USART_DMA // ä½¿ç”¨DMA
+        /* å¤„ç†DMAæ¥æ”¶åˆ°çš„æ•°æ® */
+        g_recv_length = USART_RECEIVE_LENGTH - dma_transfer_number_get(BSP_DMA_CH); // è®¡ç®—å®é™…æ¥æ”¶çš„æ•°æ®é•¿åº¦
+        /* é‡æ–°è®¾ç½®DMAä¼ è¾“ */
+        dma_channel_disable(BSP_DMA_CH); // å¤±èƒ½DMAé€šé“
+        dma_config();                             // é‡æ–°é…ç½®DMAè¿›è¡Œä¼ è¾“
 #endif
 
-        g_recv_buff[g_recv_length] = '\0'; // Êı¾İ½ÓÊÕÍê±Ï£¬Êı×é½áÊø±êÖ¾
-        g_recv_complete_flag = 1;          // ½ÓÊÕÍê³É
+        g_recv_buff[g_recv_length] = '\0'; // æ•°æ®æ¥æ”¶å®Œæ¯•ï¼Œæ•°ç»„ç»“æŸæ ‡å¿—
+        g_recv_complete_flag = 1;          // æ¥æ”¶å®Œæˆ
     }
 }
 

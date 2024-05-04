@@ -1,17 +1,17 @@
  /******************************************************************************
-   * ²âÊÔÓ²¼þ£ºÁ¢´´¿ª·¢°å¡¤GD32E230C8T6    Ê¹ÓÃÖ÷Æµ72Mhz    ¾§Õñ8Mhz
-   * °æ ±¾ ºÅ: V1.0
-   * ÐÞ¸Ä×÷Õß: www.lckfb.com
-   * ÐÞ¸ÄÈÕÆÚ: 2023Äê11ÔÂ02ÈÕ
-   * ¹¦ÄÜ½éÉÜ:      
+   * æµ‹è¯•ç¡¬ä»¶ï¼šç«‹åˆ›å¼€å‘æ¿Â·GD32E230C8T6    ä½¿ç”¨ä¸»é¢‘72Mhz    æ™¶æŒ¯8Mhz
+   * ç‰ˆ æœ¬ å·: V1.0
+   * ä¿®æ”¹ä½œè€…: www.lckfb.com
+   * ä¿®æ”¹æ—¥æœŸ: 2023å¹´11æœˆ02æ—¥
+   * åŠŸèƒ½ä»‹ç»:      
    *****************************************************************************
-   * ÁºÉ½ÅÉÈíÓ²¼þ×ÊÁÏÓëÏà¹ØÀ©Õ¹°åÈíÓ²¼þ×ÊÁÏ¹ÙÍøÈ«²¿¿ªÔ´  
-   * ¿ª·¢°å¹ÙÍø£ºwww.lckfb.com   
-   * ¼¼ÊõÖ§³Ö³£×¤ÂÛÌ³£¬ÈÎºÎ¼¼ÊõÎÊÌâ»¶Ó­ËæÊ±½»Á÷Ñ§Ï°  
-   * Á¢´´ÂÛÌ³£ºclub.szlcsc.com   
-   * ÆäÓàÄ£¿éÒÆÖ²ÊÖ²á£º¡¾Á¢´´¡¤GD32E230C8T6¿ª·¢°å¡¿Ä£¿éÒÆÖ²ÊÖ²á
-   * ¹Ø×¢bilibiliÕËºÅ£º¡¾Á¢´´¿ª·¢°å¡¿£¬ÕÆÎÕÎÒÃÇµÄ×îÐÂ¶¯Ì¬£¡
-   * ²»¿¿Âô°å×¬Ç®£¬ÒÔÅàÑøÖÐ¹ú¹¤³ÌÊ¦Îª¼ºÈÎ
+   * æ¢å±±æ´¾è½¯ç¡¬ä»¶èµ„æ–™ä¸Žç›¸å…³æ‰©å±•æ¿è½¯ç¡¬ä»¶èµ„æ–™å®˜ç½‘å…¨éƒ¨å¼€æº  
+   * å¼€å‘æ¿å®˜ç½‘ï¼šwww.lckfb.com   
+   * æŠ€æœ¯æ”¯æŒå¸¸é©»è®ºå›ï¼Œä»»ä½•æŠ€æœ¯é—®é¢˜æ¬¢è¿Žéšæ—¶äº¤æµå­¦ä¹   
+   * ç«‹åˆ›è®ºå›ï¼šclub.szlcsc.com   
+   * å…¶ä½™æ¨¡å—ç§»æ¤æ‰‹å†Œï¼šã€ç«‹åˆ›Â·GD32E230C8T6å¼€å‘æ¿ã€‘æ¨¡å—ç§»æ¤æ‰‹å†Œ
+   * å…³æ³¨bilibiliè´¦å·ï¼šã€ç«‹åˆ›å¼€å‘æ¿ã€‘ï¼ŒæŽŒæ¡æˆ‘ä»¬çš„æœ€æ–°åŠ¨æ€ï¼
+   * ä¸é å–æ¿èµšé’±ï¼Œä»¥åŸ¹å…»ä¸­å›½å·¥ç¨‹å¸ˆä¸ºå·±ä»»
   ******************************************************************************/
 #include "gd32e23x.h"
 #include "systick.h"
@@ -24,27 +24,27 @@
 
 int main(void)
 {
-    systick_config();			// µÎ´ð¶¨Ê±Æ÷³õÊ¼»¯
-	usart_gpio_config(115200U); 	// ´®¿Ú0³õÊ¼»¯
+    systick_config();			// æ»´ç­”å®šæ—¶å™¨åˆå§‹åŒ–
+	usart_gpio_config(115200U); 	// ä¸²å£0åˆå§‹åŒ–
 
-#if USB_USART_DMA // Ê¹ÓÃDMA
+#if USB_USART_DMA // ä½¿ç”¨DMA
     printf("DMA receive\r\n");
-    dma_config(); // DMAÅäÖÃ
-#else             // Ê¹ÓÃÖÐ¶Ï
+    dma_config(); // DMAé…ç½®
+#else             // ä½¿ç”¨ä¸­æ–­
     printf("Interrupt receive\r\n");
 #endif
 
     while (1)
     {
 
-        /* µÈ´ýÊý¾Ý´«ÊäÍê³É */
-        if (g_recv_complete_flag) // Êý¾Ý½ÓÊÕÍê³É
+        /* ç­‰å¾…æ•°æ®ä¼ è¾“å®Œæˆ */
+        if (g_recv_complete_flag) // æ•°æ®æŽ¥æ”¶å®Œæˆ
         {
-            g_recv_complete_flag = 0;                   // µÈ´ýÏÂ´Î½ÓÊÕ
-            printf("g_recv_length:%d ", g_recv_length); // ´òÓ¡½ÓÊÕµÄÊý¾Ý³¤¶È
-            printf("g_recv_buff:%s\r\n", g_recv_buff);  // ´òÓ¡½ÓÊÕµÄÊý¾Ý
-            memset(g_recv_buff, 0, g_recv_length);      // Çå¿ÕÊý×é
-            g_recv_length = 0;                          // Çå¿Õ³¤¶È
+            g_recv_complete_flag = 0;                   // ç­‰å¾…ä¸‹æ¬¡æŽ¥æ”¶
+            printf("g_recv_length:%d ", g_recv_length); // æ‰“å°æŽ¥æ”¶çš„æ•°æ®é•¿åº¦
+            printf("g_recv_buff:%s\r\n", g_recv_buff);  // æ‰“å°æŽ¥æ”¶çš„æ•°æ®
+            memset(g_recv_buff, 0, g_recv_length);      // æ¸…ç©ºæ•°ç»„
+            g_recv_length = 0;                          // æ¸…ç©ºé•¿åº¦
         }
     }
 }

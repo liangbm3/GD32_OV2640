@@ -2,63 +2,63 @@
 #include "bsp_usart.h"
 
 /************************************************
-º¯ÊıÃû³Æ £º dma_config
-¹¦    ÄÜ £º DMAÅäÖÃ
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š dma_config
+åŠŸ    èƒ½ ï¼š DMAé…ç½®
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void dma_config(void)
 {
-    dma_parameter_struct dma_init_struct; // DMAµ¥Êı¾İ½á¹¹Ìå
-    rcu_periph_clock_enable(BSP_DMA_RCU);             // ¿ªÆôDMAÊ±ÖÓ
+    dma_parameter_struct dma_init_struct; // DMAå•æ•°æ®ç»“æ„ä½“
+    rcu_periph_clock_enable(BSP_DMA_RCU);             // å¼€å¯DMAæ—¶é’Ÿ
 
-    dma_deinit(BSP_DMA_CH); // ³õÊ¼»¯DMAÍ¨µÀ
+    dma_deinit(BSP_DMA_CH); // åˆå§‹åŒ–DMAé€šé“
 
-    /* ÅäÖÃDMA³õÊ¼»¯²ÎÊı */
-    dma_init_struct.periph_addr = (uint32_t)&USART_TDATA(BSP_USART); // ÍâÉèµØÖ·
-    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;       // ²»Ê¹ÓÃÔöÁ¿Ä£Ê½£¬Îª¹Ì¶¨Ä£Ê½
-    dma_init_struct.memory_addr = (uint32_t)g_recv_buff;           // ÄÚ´æµØÖ·
-    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;        // ÔöÁ¿Ä£Ê½
-    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;    // Ò»´Î´«Êä³¤¶È8bit
-	dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;    // Ò»´Î´«Êä³¤¶È8bit
-    dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;               // ÍâÉèµ½ÄÚ´æ
-    dma_init_struct.number = USART_RECEIVE_LENGTH;                  // Òª´«ÊäµÄÊı¾İÁ¿
-    dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;             // ³¬¸ßÓÅÏÈ¼¶
-    /* ³õÊ¼»¯DMA½á¹¹Ìå */
+    /* é…ç½®DMAåˆå§‹åŒ–å‚æ•° */
+    dma_init_struct.periph_addr = (uint32_t)&USART_TDATA(BSP_USART); // å¤–è®¾åœ°å€
+    dma_init_struct.periph_inc = DMA_PERIPH_INCREASE_DISABLE;       // ä¸ä½¿ç”¨å¢é‡æ¨¡å¼ï¼Œä¸ºå›ºå®šæ¨¡å¼
+    dma_init_struct.memory_addr = (uint32_t)g_recv_buff;           // å†…å­˜åœ°å€
+    dma_init_struct.memory_inc = DMA_MEMORY_INCREASE_ENABLE;        // å¢é‡æ¨¡å¼
+    dma_init_struct.memory_width = DMA_MEMORY_WIDTH_8BIT;    // ä¸€æ¬¡ä¼ è¾“é•¿åº¦8bit
+	dma_init_struct.periph_width = DMA_PERIPHERAL_WIDTH_8BIT;    // ä¸€æ¬¡ä¼ è¾“é•¿åº¦8bit
+    dma_init_struct.direction = DMA_PERIPHERAL_TO_MEMORY;               // å¤–è®¾åˆ°å†…å­˜
+    dma_init_struct.number = USART_RECEIVE_LENGTH;                  // è¦ä¼ è¾“çš„æ•°æ®é‡
+    dma_init_struct.priority = DMA_PRIORITY_ULTRA_HIGH;             // è¶…é«˜ä¼˜å…ˆçº§
+    /* åˆå§‹åŒ–DMAç»“æ„ä½“ */
     dma_init(BSP_DMA_CH, &dma_init_struct);
 	
 	
-	dma_circulation_disable(BSP_DMA_CH); // ¹Ø±ÕÑ­»·
+	dma_circulation_disable(BSP_DMA_CH); // å…³é—­å¾ªç¯
 	dma_memory_to_memory_disable(BSP_DMA_CH);
 	
 	usart_dma_transmit_config(BSP_DMA, USART_DENT_ENABLE);
 	
-	    /* Ê¹ÄÜDMAÍ¨µÀÖĞ¶Ï */
+	    /* ä½¿èƒ½DMAé€šé“ä¸­æ–­ */
     dma_interrupt_enable(BSP_DMA_CH, DMA_INT_FTF);
 	
-    /* Ê¹ÄÜDMAÍ¨µÀ */
+    /* ä½¿èƒ½DMAé€šé“ */
     dma_channel_enable(BSP_DMA_CH);
 
-    /* ÅäÖÃÖĞ¶ÏÓÅÏÈ¼¶ */
+    /* é…ç½®ä¸­æ–­ä¼˜å…ˆçº§ */
     nvic_irq_enable(BSP_DMA_CH_IRQ, 1);
-    /* Ê¹ÄÜ´®¿ÚDMA½ÓÊÕ */
+    /* ä½¿èƒ½ä¸²å£DMAæ¥æ”¶ */
     usart_dma_receive_config(BSP_USART, USART_DENR_ENABLE);
 }
 
 /************************************************
-º¯ÊıÃû³Æ £º BSP_DMA_CH_IRQHandler
-¹¦    ÄÜ £º DMAÖĞ¶Ï·şÎñº¯Êı
-²Î    Êı £º ÎŞ
-·µ »Ø Öµ £º ÎŞ
-×÷    Õß £º LC
+å‡½æ•°åç§° ï¼š BSP_DMA_CH_IRQHandler
+åŠŸ    èƒ½ ï¼š DMAä¸­æ–­æœåŠ¡å‡½æ•°
+å‚    æ•° ï¼š æ— 
+è¿” å› å€¼ ï¼š æ— 
+ä½œ    è€… ï¼š LC
 *************************************************/
 void BSP_DMA_CH_IRQ_HANDLER(void)
 {
 
-    if (dma_interrupt_flag_get(BSP_DMA_CH, DMA_INT_FLAG_FTF) == SET) // ´«ÊäÍê³ÉÖĞ¶Ï
+    if (dma_interrupt_flag_get(BSP_DMA_CH, DMA_INT_FLAG_FTF) == SET) // ä¼ è¾“å®Œæˆä¸­æ–­
     {
-        dma_interrupt_flag_clear(BSP_DMA_CH, DMA_INT_FLAG_FTF); // ÇåÖĞ¶Ï±êÖ¾Î»
-        // g_recv_complete_flag = 1;                            // Êı¾İ´«ÊäÍê³É
+        dma_interrupt_flag_clear(BSP_DMA_CH, DMA_INT_FLAG_FTF); // æ¸…ä¸­æ–­æ ‡å¿—ä½
+        // g_recv_complete_flag = 1;                            // æ•°æ®ä¼ è¾“å®Œæˆ
     }
 }
