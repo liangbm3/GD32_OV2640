@@ -5,14 +5,14 @@
 #include "systick.h"
 
 
-#define USB_USART_DMA 1
+#define USB_USART_DMA 0
 
-#define BSP_DMA_RCU 			RCU_DMA                            // DMAÊ±ÖÓ
+#define BSP_DMA_RCU 			RCU_DMA                            // DMAÊ±ï¿½ï¿½
 #define BSP_DMA 				DMA                                    // DMA
-#define BSP_DMA_CH 				DMA_CH2                              // DMAÍ¨µÀ
-#define BSP_DMA_CH_IRQ 			DMA_Channel1_2_IRQn               // DMAÖÐ¶Ï
-#define BSP_DMA_CH_IRQ_HANDLER 	DMA_Channel1_2_IRQHandler 	// DMAÖÐ¶Ï·þÎñº¯ÊýÃû
+#define BSP_DMA_CH 				DMA_CH2                              // DMAÍ¨ï¿½ï¿½
+#define BSP_DMA_CH_IRQ 			DMA_Channel1_2_IRQn               // DMAï¿½Ð¶ï¿½
+#define BSP_DMA_CH_IRQ_HANDLER 	DMA_Channel1_2_IRQHandler 	// DMAï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-void dma_config(void); // ÅäÖÃDMA
+void dma_config(void); // ï¿½ï¿½ï¿½ï¿½DMA
 
 #endif /* BSP_DMA_H */
