@@ -30,7 +30,7 @@ int main(void)
     // LCD_Init();//屏幕初始化
     // LCD_Fill(0,0,LCD_W,LCD_H,WHITE);//清全屏为白色
     printf("yes\n");
-    usart_send_String("ok\n");
+    usart_send_string("ok\n");
     while(1)
     {           
         // LCD_ShowChinese(40,0,"中电子",RED,WHITE,32,0);
@@ -41,7 +41,7 @@ int main(void)
                 
         // LCD_ShowString(0,16*3,"Nun:",BLACK,WHITE,16,0);
         // LCD_ShowFloatNum1(8*4,16*3,t,4,BLACK,WHITE,16);
-        usart_send_String("hello\n");
+        usart_send_string("hello\n");
         t+=0.11;
         printf("666:%d\n",t);
         delay_1ms(10);

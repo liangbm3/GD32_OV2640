@@ -24,16 +24,21 @@
 /* -------------------------------------------------------------------------- */
 
 //RX端口：
-#define RCU_RX RCU_GPIOA
-#define PORT_RX GPIOA
-#define GPIO_RX GPIO_PIN_10
+#define BSP_USART_RX_RCU  		RCU_GPIOA
+#define BSP_USART_RX_PORT 		GPIOA
+#define BSP_USART_RX_PIN  		GPIO_PIN_10
 
 //TX端口：
-#define RCU_TX RCU_GPIOA
-#define PORT_TX GPIOA
-#define GPIO_TX GPIO_PIN_9
+#define BSP_USART_TX_RCU  		RCU_GPIOA
+#define BSP_USART_TX_PORT 		GPIOA
+#define BSP_USART_TX_PIN  		GPIO_PIN_9
 
-
+//串口
+#define BSP_USART_RCU     		RCU_USART0
+#define BSP_USART_AF 			GPIO_AF_1
+#define BSP_USART 				USART0      		
+#define BSP_USART_IRQ     		USART0_IRQn 		
+#define BSP_USART_IRQHandler  	USART0_IRQHandler	
 /* -------------------------------------------------------------------------- */
 //串口变量定义
 /* -------------------------------------------------------------------------- */
@@ -56,7 +61,7 @@ extern uint8_t  g_recv_complete_flag; 						 // ½ÓÊÕÍê³É±êÖ¾Î»
 
 void usart_init(void);
 void usart_send_data(uint8_t ucch); 
-void usart_send_String(uint8_t *ucstr);
+void usart_send_string(uint8_t *ucstr);
 #endif
 
 
