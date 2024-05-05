@@ -6,15 +6,15 @@
 
 /* -------------------------------------------------------------------------- */
 //端口宏定义
-//VSYNC     PC13
-//PWDN      PC14
+//VSYNC     PB9
+//PWDN      PB14
 //RST       PA4
 //HREF      PA5
 //DATA0     PA6
 //DATA1     PA7
 //DATA2     PA8
-//DATA3     PA9
-//DATA4     PA10
+//DATA3     PA2
+//DATA4     PA3
 //DATA5     PA11
 //DATA6     pA12
 //DATA7     PA15
@@ -22,13 +22,13 @@
 /* -------------------------------------------------------------------------- */
 
 //VSYNC端口宏定义
-#define RCU_VSYNC RCU_GPIOC
-#define PORT_VSYNC GPIOC
-#define GPIO_VSYNC GPIO_PIN_13
+#define RCU_VSYNC RCU_GPIOB
+#define PORT_VSYNC GPIOB
+#define GPIO_VSYNC GPIO_PIN_9
 
 //PWDN端口宏定义
-#define RCU_PWDN RCU_GPIOC
-#define PORT_PWDN GPIOC
+#define RCU_PWDN RCU_GPIOB
+#define PORT_PWDN GPIOB
 #define GPIO_PWDN GPIO_PIN_14
 
 //RST端口宏定义
@@ -61,11 +61,11 @@
 
 #define RCU_DATA_3 RCU_GPIOA
 #define PORT_DATA_3 GPIOA
-#define GPIO_DATA_3 GPIO_PIN_9
+#define GPIO_DATA_3 GPIO_PIN_2
 
 #define RCU_DATA_4 RCU_GPIOA
 #define PORT_DATA_4 GPIOA
-#define GPIO_DATA_4 GPIO_PIN_10
+#define GPIO_DATA_4 GPIO_PIN_3
 
 #define RCU_DATA_5 RCU_GPIOA
 #define PORT_DATA_5 GPIOA
@@ -89,8 +89,10 @@
 //设置PWDN的输出函数
 #define OV2640_PWDN(x) gpio_bit_write(PORT_PWDN,GPIO_PWDN,(x?SET:RESET))
 #define OV2640_RST(x)  gpio_bit_write(PORT_RST,GPIO_RST,(x?SET:RESET))
-
-
+#define OV2640_HREF    gpio_input_bit_get(PORT_HREF,GPIO_HREF)
+#define OV2640_DATA0   gpio_input_bit_get(PORT_DATA_0,GPIO_DATA_0)
+#define OV2640_VSYNC   gpio_input_bit_get(PORT_VSYNC,GPIO_VSYNC)
+#define OV2640_PCLK    gpio_input_bit_get(PORT_CLOCK,GPIO_CLOCK)
 ////////////////////////////////////////////////////////////////////////////////// 
 #define OV2640_MID				0X7FA2
 #define OV2640_PID				0X2642

@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>GD32E230</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Firmware\GD32E23x_standard_peripheral\Include;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\User;..\Hardware;..\Hardware\usart;..\Hardware\dma;..\Firmware\CMSIS\Core\Include</IncludePath>
+              <IncludePath>..\Firmware\GD32E23x_standard_peripheral\Include;..\Firmware\CMSIS;..\Firmware\CMSIS\GD\GD32E23x\Include;..\User;..\Hardware;..\Hardware\usart;..\Hardware\dma;..\Firmware\CMSIS\Core\Include;..\Hardware\lcd;..\Hardware\OV2640;..\Hardware\TIMER;..\MALLOC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -563,6 +563,9 @@
               <FilePath>..\Doc\readme.txt</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>MALLOC</GroupName>
         </Group>
       </Groups>
     </Target>

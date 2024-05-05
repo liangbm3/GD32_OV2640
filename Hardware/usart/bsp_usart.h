@@ -1,17 +1,17 @@
  /******************************************************************************
-   * ²âÊÔÓ²¼þ£ºÁ¢´´¿ª·¢°å¡¤GD32E230C8T6    Ê¹ÓÃÖ÷Æµ72Mhz    ¾§Õñ8Mhz
-   * °æ ±¾ ºÅ: V1.0
-   * ÐÞ¸Ä×÷Õß: www.lckfb.com
-   * ÐÞ¸ÄÈÕÆÚ: 2023Äê11ÔÂ02ÈÕ
-   * ¹¦ÄÜ½éÉÜ:      
+   * æµ‹è¯•ç¡¬ä»¶ï¼šç«‹åˆ›å¼€å‘æ¿Â·GD32E230C8T6    ä½¿ç”¨ä¸»é¢‘72Mhz    æ™¶æŒ¯8Mhz
+   * ç‰ˆ æœ¬ å·: V1.0
+   * ä¿®æ”¹ä½œè€…: www.lckfb.com
+   * ä¿®æ”¹æ—¥æœŸ: 2023å¹´11æœˆ02æ—¥
+   * åŠŸèƒ½ä»‹ç»:      
    *****************************************************************************
-   * ÁºÉ½ÅÉÈíÓ²¼þ×ÊÁÏÓëÏà¹ØÀ©Õ¹°åÈíÓ²¼þ×ÊÁÏ¹ÙÍøÈ«²¿¿ªÔ´  
-   * ¿ª·¢°å¹ÙÍø£ºwww.lckfb.com   
-   * ¼¼ÊõÖ§³Ö³£×¤ÂÛÌ³£¬ÈÎºÎ¼¼ÊõÎÊÌâ»¶Ó­ËæÊ±½»Á÷Ñ§Ï°  
-   * Á¢´´ÂÛÌ³£ºclub.szlcsc.com   
-   * ÆäÓàÄ£¿éÒÆÖ²ÊÖ²á£º¡¾Á¢´´¡¤GD32E230C8T6¿ª·¢°å¡¿Ä£¿éÒÆÖ²ÊÖ²á
-   * ¹Ø×¢bilibiliÕËºÅ£º¡¾Á¢´´¿ª·¢°å¡¿£¬ÕÆÎÕÎÒÃÇµÄ×îÐÂ¶¯Ì¬£¡
-   * ²»¿¿Âô°å×¬Ç®£¬ÒÔÅàÑøÖÐ¹ú¹¤³ÌÊ¦Îª¼ºÈÎ
+   * æ¢å±±æ´¾è½¯ç¡¬ä»¶èµ„æ–™ä¸Žç›¸å…³æ‰©å±•æ¿è½¯ç¡¬ä»¶èµ„æ–™å®˜ç½‘å…¨éƒ¨å¼€æº  
+   * å¼€å‘æ¿å®˜ç½‘ï¼šwww.lckfb.com   
+   * æŠ€æœ¯æ”¯æŒå¸¸é©»è®ºå›ï¼Œä»»ä½•æŠ€æœ¯é—®é¢˜æ¬¢è¿Žéšæ—¶äº¤æµå­¦ä¹   
+   * ç«‹åˆ›è®ºå›ï¼šclub.szlcsc.com   
+   * å…¶ä½™æ¨¡å—ç§»æ¤æ‰‹å†Œï¼šã€ç«‹åˆ›Â·GD32E230C8T6å¼€å‘æ¿ã€‘æ¨¡å—ç§»æ¤æ‰‹å†Œ
+   * å…³æ³¨bilibiliè´¦å·ï¼šã€ç«‹åˆ›å¼€å‘æ¿ã€‘ï¼ŒæŽŒæ¡æˆ‘ä»¬çš„æœ€æ–°åŠ¨æ€ï¼
+   * ä¸é å–æ¿èµšé’±ï¼Œä»¥åŸ¹å…»ä¸­å›½å·¥ç¨‹å¸ˆä¸ºå·±ä»»
   ******************************************************************************/
 
 #ifndef _BSP_USART_H
@@ -20,29 +20,29 @@
 #include "gd32e23x.h"
 #include "systick.h"
 
-#define BSP_USART_TX_RCU  		RCU_GPIOA   		// ´®¿ÚTXµÄ¶Ë¿ÚÊ±ÖÓ
-#define BSP_USART_RX_RCU  		RCU_GPIOA   		// ´®¿ÚRXµÄ¶Ë¿ÚÊ±ÖÓ
-#define BSP_USART_RCU     		RCU_USART0  		// ´®¿Ú0µÄÊ±ÖÓ
+#define BSP_USART_TX_RCU  		RCU_GPIOA   		// ä¸²å£TXçš„ç«¯å£æ—¶é’Ÿ
+#define BSP_USART_RX_RCU  		RCU_GPIOA   		// ä¸²å£RXçš„ç«¯å£æ—¶é’Ÿ
+#define BSP_USART_RCU     		RCU_USART0  		// ä¸²å£0çš„æ—¶é’Ÿ
 
-#define BSP_USART_TX_PORT 		GPIOA				// ´®¿ÚTXµÄ¶Ë¿Ú
-#define BSP_USART_RX_PORT 		GPIOA				// ´®¿ÚRXµÄ¶Ë¿Ú
-#define BSP_USART_AF 			GPIO_AF_1   		// ´®¿Ú0µÄ¸´ÓÃ¹¦ÄÜ
-#define BSP_USART_TX_PIN  		GPIO_PIN_9  		// ´®¿ÚTXµÄÒý½Å
-#define BSP_USART_RX_PIN  		GPIO_PIN_10 		// ´®¿ÚRXµÄÒý½Å
+#define BSP_USART_TX_PORT 		GPIOA				// ä¸²å£TXçš„ç«¯å£
+#define BSP_USART_RX_PORT 		GPIOA				// ä¸²å£RXçš„ç«¯å£
+#define BSP_USART_AF 			GPIO_AF_1   		// ä¸²å£0çš„å¤ç”¨åŠŸèƒ½
+#define BSP_USART_TX_PIN  		GPIO_PIN_9  		// ä¸²å£TXçš„å¼•è„š
+#define BSP_USART_RX_PIN  		GPIO_PIN_10 		// ä¸²å£RXçš„å¼•è„š
 
-#define BSP_USART 				USART0      		// ´®¿Ú0
-#define BSP_USART_IRQ     		USART0_IRQn 		// ´®¿Ú0ÖÐ¶Ï
-#define BSP_USART_IRQHandler  	USART0_IRQHandler	// ´®¿Ú0ÖÐ¶Ï·þÎñº¯Êý
+#define BSP_USART 				USART0      		// ä¸²å£0
+#define BSP_USART_IRQ     		USART0_IRQn 		// ä¸²å£0ä¸­æ–­
+#define BSP_USART_IRQHandler  	USART0_IRQHandler	// ä¸²å£0ä¸­æ–­æœåŠ¡å‡½æ•°
 
-/* ´®¿Ú»º³åÇøµÄÊý¾Ý³¤¶È */
+/* ä¸²å£ç¼“å†²åŒºçš„æ•°æ®é•¿åº¦ */
 #define USART_RECEIVE_LENGTH  4096
 
-extern uint8_t  g_recv_buff[USART_RECEIVE_LENGTH]; // ½ÓÊÕ»º³åÇø
-extern uint16_t g_recv_length;										 // ½ÓÊÕÊý¾Ý³¤¶È
-extern uint8_t  g_recv_complete_flag; 						 // ½ÓÊÕÍê³É±êÖ¾Î»
+extern uint8_t  g_recv_buff[USART_RECEIVE_LENGTH]; // æŽ¥æ”¶ç¼“å†²åŒº
+extern uint16_t g_recv_length;										 // æŽ¥æ”¶æ•°æ®é•¿åº¦
+extern uint8_t  g_recv_complete_flag; 						 // æŽ¥æ”¶å®Œæˆæ ‡å¿—ä½
 
-void usart_gpio_config(uint32_t band_rate);  			 // ÅäÖÃ´®¿Ú
-void usart_send_data(uint8_t ucch);          			 // ·¢ËÍÒ»¸ö×Ö·û
-void usart_send_string(uint8_t *ucstr);      			 // ·¢ËÍÒ»¸ö×Ö·û´®
+void usart_gpio_config(uint32_t band_rate);  			 // é…ç½®ä¸²å£
+void usart_send_data(uint8_t ucch);          			 // å‘é€ä¸€ä¸ªå­—ç¬¦
+void usart_send_string(uint8_t *ucstr);      			 // å‘é€ä¸€ä¸ªå­—ç¬¦ä¸²
 
 #endif
