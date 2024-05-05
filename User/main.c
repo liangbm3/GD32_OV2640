@@ -54,10 +54,10 @@ u8 ov2640_jpg_photo()
 	
 	OV2640_JPEG_Mode();							//切换为JPEG模式
   	OV2640_OutSize_Set(OV2640_JPEG_WIDTH,OV2640_JPEG_HEIGHT); 
-	SCCB_WR_Reg(0XFF,0X00);
-	SCCB_WR_Reg(0XD3,30);
-	SCCB_WR_Reg(0XFF,0X01);
-	SCCB_WR_Reg(0X11,0X1);
+	// SCCB_WR_Reg(0XFF,0X00);
+	// SCCB_WR_Reg(0XD3,30);
+	// SCCB_WR_Reg(0XFF,0X01);
+	// SCCB_WR_Reg(0X11,0X1);
 	for(i=0;i<10;i++)		//丢失10帧，等待ov2640自动调节好
 	{
 		while(OV2640_VSYNC()==1);	 
