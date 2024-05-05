@@ -18,16 +18,17 @@ void SCCB_Init(void)
 	//设置SCL为输出模式
 	gpio_mode_set(PORT_SCL,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SCL);
 	//配置为开漏输出、50MHZ
-	gpio_output_options_set(PORT_SCL,GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ,GPIO_SCL);
+	gpio_output_options_set(PORT_SCL,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_SCL);
 	//设置高电平
 	SCCB_SCL(1);
 
 	//配置SDA为输出模式
 	gpio_mode_set(PORT_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SDA);
 	//配置为开漏输出、50MHZ
-	gpio_output_options_set(PORT_SDA,GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ,GPIO_SDA);
+	gpio_output_options_set(PORT_SDA,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_SDA);
 	//设置高电平
 	SCCB_SDA(1);
+	SCCB_SDA_OUT();
 }			 
 
 /* -------------------------------------------------------------------------- */
@@ -44,6 +45,7 @@ void SCCB_Init(void)
 //在激活状态下，SDA和SCL均为低电平
 void SCCB_Start(void)
 {
+	SCCB_SDA_OUT();
     SCCB_SDA(1);
 	SCCB_SCL(1);
 	delay_us(50);
@@ -57,6 +59,7 @@ void SCCB_Start(void)
 //空闲状态时，SDA和SCL均为高电平
 void SCCB_Stop(void)
 {
+	SCCB_SDA_OUT();
 	SCCB_SDA(0);
 	delay_us(50);
 	SCCB_SCL(1);
@@ -68,6 +71,7 @@ void SCCB_Stop(void)
 //产生NA信号
 void SCCB_No_Ack(void)
 {
+	SCCB_SDA_OUT();
 	delay_us(50);
 	SCCB_SDA(1);
 	SCCB_SCL(1);	
@@ -78,12 +82,46 @@ void SCCB_No_Ack(void)
 	delay_us(50);
 }
 
+
+//等待从机应答
+//0：有应答；1：无应答
+unsigned char I2C_WaitAck(void)
+{
+	
+	char ack = 0;
+	unsigned char ack_flag = 10;
+	SCCB_SCL(0);
+	SCCB_SDA(1);
+	SCCB_SDA_IN();
+	delay_1us(5);
+	SCCB_SCL(1);
+    delay_1us(5);
+
+	while( (SCCB_READ_SDA()==1) && ( ack_flag ) )
+	{
+		ack_flag--;
+		delay_1us(5);
+	}
+	
+	if( ack_flag <= 0 )
+	{
+		SCCB_Stop();
+		return 1;
+	}
+	else
+	{
+		SCCB_SCL(0);
+		SCCB_SDA_OUT();
+	}
+	return ack;
+}
 //SCCB写入一个字节
 //返回值：0，成功；1.失败
 u8 SCCB_WR_Byte(u8 dat)
 {
 	SCCB_SDA_OUT();
-	u8 j,res;	 
+	u8 j,res;
+	SCCB_SCL(0);	 
 	for(j=0;j<8;j++) //循环8次发送数据
 	{
 		if(dat&0x80)
@@ -104,7 +142,7 @@ u8 SCCB_WR_Byte(u8 dat)
 	delay_us(50);
 	SCCB_SCL(1);			//接收第九位，来判断是否成功
 	delay_us(50);
-	if(SCCB_READ_SDA)
+	if(SCCB_READ_SDA())
 	{
 		res=1;	//SDA=发送失败，返回1
 	}  
@@ -129,7 +167,7 @@ u8 SCCB_RD_Byte(void)
 		delay_us(50);
 		SCCB_SCL(1);
 		temp=temp<<1;
-		if(SCCB_READ_SDA)
+		if(SCCB_READ_SDA())
 		{
 			temp++;
 		}   
@@ -148,9 +186,9 @@ u8 SCCB_WR_Reg(u8 reg,u8 data)
 	SCCB_Start(); 					//启动SCCB传输
 	if(SCCB_WR_Byte(SCCB_ID))res=1;	//写器件ID  
 	delay_us(100);
-  	if(SCCB_WR_Byte(reg))res=1;		//写寄存器地址
+  	if(SCCB_WR_Byte(reg))res=2;		//写寄存器地址
 	delay_us(100);
-  	if(SCCB_WR_Byte(data))res=1; 	//写数据
+  	if(SCCB_WR_Byte(data))res=3; 	//写数据
   	SCCB_Stop();	  
   	return	res;
 }		  					    

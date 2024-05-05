@@ -1,7 +1,7 @@
 #include "systick.h"
 #include "ov2640.h"
 #include "ov2640cfg.h"
-
+#include <stdio.h>
 /* -------------------------------------------------------------------------- */
 //函数名称：OV2640_Init
 //函数作用：初始化ov2640，配置完后，默认输出1600*1200的图片
@@ -39,7 +39,7 @@ u8 OV2640_Init(void)
 	gpio_bit_write(PORT_PWDN,GPIO_PWDN,1);
 
 	//配置RST
-	gpio_mode_set(PORT_RST,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_RST);
+	gpio_mode_set(PORT_RST,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_RST);
 	gpio_output_options_set(PORT_RST,GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ,GPIO_RST);
 	gpio_bit_write(PORT_RST,GPIO_RST,1);
 
@@ -75,7 +75,7 @@ u8 OV2640_Init(void)
 	reg|=SCCB_RD_Reg(OV2640_SENSOR_MIDL);	//读取厂家ID第八位
 	if(reg!=OV2640_MID)
 	{
-//		printf("MID:%d\r\n",reg);
+		printf("MID:%d\r\n",reg);
 		return 1;
 	}
 	reg=SCCB_RD_Reg(OV2640_SENSOR_PIDH);	//读取厂家ID高八位
@@ -83,7 +83,7 @@ u8 OV2640_Init(void)
 	reg|=SCCB_RD_Reg(OV2640_SENSOR_PIDL);	//读取厂家ID第八位
 	if(reg!=OV2640_PID)
 	{
-//		printf("HID:%d\r\n",reg);
+		printf("HID:%d\r\n",reg);
 		return 2;
 	}   
  	//初始化ov2640，采用（1600*1200）  

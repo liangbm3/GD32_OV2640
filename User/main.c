@@ -58,18 +58,25 @@ u8 ov2640_jpg_photo()
 	SCCB_WR_Reg(0XD3,30);
 	SCCB_WR_Reg(0XFF,0X01);
 	SCCB_WR_Reg(0X11,0X1);
-	for(i=0;i<10;i++)		//丢失10帧，等待哦ov2640自动调节好
+	for(i=0;i<10;i++)		//丢失10帧，等待ov2640自动调节好
 	{
-		while(OV2640_VSYNC==1);	 
-		while(OV2640_VSYNC==0);	  
+		while(OV2640_VSYNC()==1);	 
+		while(OV2640_VSYNC()==0);	  
 	}  
-	while(OV2640_VSYNC==1)	//开始采集JPEG数据
+	while(OV2640_VSYNC()==1)	//开始采集JPEG数据
 	{
-		while(OV2640_HREF)
+		while(OV2640_HREF())
 		{ 
-			while(OV2640_PCLK==0); 
-			ov2640_framebuf[jpeglen]=OV2640_DATA0;
-			while(OV2640_PCLK==1);
+			uint8_t tem[500];
+			while(OV2640_PCLK()==0); 
+			// ov2640_framebuf[jpeglen]=OV2640_DATA0();
+			tem[jpeglen]=OV2640_DATA0();
+			for(int i=0;i<500;i++)
+			{
+				printf("%d ",tem[i]);
+			}
+			
+			while(OV2640_PCLK()==1);
 			jpeglen++;
 		} 
 	}		
@@ -126,6 +133,7 @@ int main(void)
 	delay_1ms(1500);
 	OV2640_OutSize_Set(320,240);
 	ov2640_speed_ctrl();
+	ov2640_jpg_photo();
     while (1)
     {
 		

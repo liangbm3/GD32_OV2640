@@ -46,15 +46,15 @@
 /* -------------------------------------------------------------------------- */
 
 //设置SDA的输入输出
-#define SCCB_SDA_IN()  gpio_mode_set(PORT_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
-#define SCCB_SDA_OUT() gpio_mode_set(PORT_SDA,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
+#define SCCB_SDA_IN()  gpio_mode_set(PORT_SDA,GPIO_MODE_INPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
+#define SCCB_SDA_OUT() gpio_mode_set(PORT_SDA,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_SDA)
 
 //SDA和SCL的输出函数
 #define SCCB_SDA(x) gpio_bit_write(PORT_SDA,GPIO_SDA,(x?SET:RESET))
-#define SCCB_SCL(x) gpio_bit_write(PORT_SCL,GPIO_SDA,(x?SET:RESET))
+#define SCCB_SCL(x) gpio_bit_write(PORT_SCL,GPIO_SCL,(x?SET:RESET))
 
 //获取SDA的引脚电平变化
-#define SCCB_READ_SDA gpio_input_bit_get(PORT_SDA,GPIO_SDA)
+#define SCCB_READ_SDA() gpio_input_bit_get(PORT_SDA,GPIO_SDA)
 
 //ov2640的id
 #define SCCB_ID   			0X60  			
@@ -70,6 +70,7 @@ u8 SCCB_WR_Byte(u8 dat);//SCCB写入一个字节
 u8 SCCB_RD_Byte(void);//SCCB读取一个字节
 u8 SCCB_WR_Reg(u8 reg,u8 data);//写寄存器
 u8 SCCB_RD_Reg(u8 reg);//读寄存器
+unsigned char I2C_WaitAck(void);
 #endif
 
 

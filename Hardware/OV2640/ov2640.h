@@ -79,20 +79,27 @@
 #define PORT_DATA_7 GPIOA
 #define GPIO_DATA_7 GPIO_PIN_15
 
-
 /* -------------------------------------------------------------------------- */
 //端口操作函数宏定义
 //作者：lbm
 //日期2024.5.3
 /* -------------------------------------------------------------------------- */
 
-//设置PWDN的输出函数
 #define OV2640_PWDN(x) gpio_bit_write(PORT_PWDN,GPIO_PWDN,(x?SET:RESET))
 #define OV2640_RST(x)  gpio_bit_write(PORT_RST,GPIO_RST,(x?SET:RESET))
-#define OV2640_HREF    gpio_input_bit_get(PORT_HREF,GPIO_HREF)
-#define OV2640_DATA0   gpio_input_bit_get(PORT_DATA_0,GPIO_DATA_0)
-#define OV2640_VSYNC   gpio_input_bit_get(PORT_VSYNC,GPIO_VSYNC)
-#define OV2640_PCLK    gpio_input_bit_get(PORT_CLOCK,GPIO_CLOCK)
+#define OV2640_HREF()    gpio_input_bit_get(PORT_HREF,GPIO_HREF)
+#define OV2640_VSYNC()   gpio_input_bit_get(PORT_VSYNC,GPIO_VSYNC)
+#define OV2640_PCLK()    gpio_input_bit_get(PORT_CLOCK,GPIO_CLOCK)
+#define OV2640_DATA0()   gpio_input_bit_get(PORT_DATA_0,GPIO_DATA_0)
+#define OV2640_DATA1()   gpio_input_bit_get(PORT_DATA_1,GPIO_DATA_1)
+#define OV2640_DATA2()   gpio_input_bit_get(PORT_DATA_2,GPIO_DATA_2)
+#define OV2640_DATA3()   gpio_input_bit_get(PORT_DATA_3,GPIO_DATA_3)
+#define OV2640_DATA4()   gpio_input_bit_get(PORT_DATA_4,GPIO_DATA_4)
+#define OV2640_DATA5()   gpio_input_bit_get(PORT_DATA_5,GPIO_DATA_5)
+#define OV2640_DATA6()   gpio_input_bit_get(PORT_DATA_6,GPIO_DATA_6)
+#define OV2640_DATA7()   gpio_input_bit_get(PORT_DATA_7,GPIO_DATA_7)
+
+
 ////////////////////////////////////////////////////////////////////////////////// 
 #define OV2640_MID				0X7FA2
 #define OV2640_PID				0X2642
